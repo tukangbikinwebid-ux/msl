@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion, Variants } from "framer-motion";
-import { ArrowRight, CheckCircle, X, Eye, FileText } from "lucide-react"; // Menambah icon baru
+import { X,FileText } from "lucide-react";
 
 // --- DUMMY DATA ---
 interface ProjectItem {
