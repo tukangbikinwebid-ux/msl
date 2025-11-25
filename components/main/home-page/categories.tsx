@@ -326,10 +326,7 @@ const SoloCodingSection: React.FC = () => {
 
           {/* Tombol Lihat Lebih Banyak */}
           <div className="text-center mt-12">
-            <button
-              className="px-6 py-3 font-bold rounded-lg text-white transition duration-300 hover:opacity-90 shadow-md"
-              style={{ backgroundColor: blue }}
-            >
+            <button className="px-6 py-3 font-bold rounded-lg text-[#2563EB] border border-[#2563EB] transition duration-300 hover:bg-blue-100 shadow-md">
               Lihat Semua Proyek Siap Pakai
             </button>
           </div>

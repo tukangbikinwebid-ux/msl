@@ -36,6 +36,7 @@ import ImageCarousel from "./caraousel-hero";
 import Swal from "sweetalert2";
 import HeroSection from "./hero-section";
 import SoloCodingSection from "./categories";
+import TestimonialsSection from "./testimonials";
 
 export default function HomePage() {
   const router = useRouter();
@@ -356,6 +357,7 @@ export default function HomePage() {
 
       {/* ===================== Categories Section (Dynamic via Service) ===================== */}
       <SoloCodingSection />
+      <TestimonialsSection/>
 
       {/* ===================== Why Choose COLORE (Features) ===================== */}
       <section className="py-20 bg-[#DFF19D]">
