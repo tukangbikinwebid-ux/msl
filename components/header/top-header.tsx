@@ -33,45 +33,31 @@ export default function Header() {
   // Mapping warna hover untuk setiap menu sesuai palet
   const menuItemColors = [
     {
-      name: t.about,
-      href: "/about",
-      hoverBg: "hover:bg-[#DFF1AD]", // Light green
-      activeBg: "bg-[#DFF1AD]",
+      name: t.website,
+      href: "/cari-website",
+      hoverBg: "hover:bg-[#c2d6f6]",
+      activeBg: "bg-[#a0bff0]",
       textColor: "text-[#6B7280]",
     },
     {
-      name: t.products,
-      href: "/product",
-      hoverBg: "hover:bg-[#F6CCD0]", // Light pink
-      activeBg: "bg-[#F6CCD0]",
+      name: t.custom,
+      href: "/custom-website",
+      hoverBg: "hover:bg-[#c2d6f6]",
+      activeBg: "bg-[#a0bff0]",
       textColor: "text-[#6B7280]",
     },
     {
-      name: t.howToOrder,
-      href: "/how-to-order",
-      hoverBg: "hover:bg-[#BFF0F5]", // Light blue
-      activeBg: "bg-[#BFF0F5]",
+      name: t.question,
+      href: "/pertanyaan",
+      hoverBg: "hover:bg-[#c2d6f6]",
+      activeBg: "bg-[#a0bff0]",
       textColor: "text-[#6B7280]",
     },
     {
-      name: t.cekOrder,
-      href: "/cek-order",
-      hoverBg: "hover:bg-[#BFF0F5]", // Light blue
-      activeBg: "bg-[#BFF0F5]",
-      textColor: "text-[#6B7280]",
-    },
-    {
-      name: t.news,
-      href: "/blog",
-      hoverBg: "hover:bg-[#DFF1AD]", // Light green
-      activeBg: "bg-[#DFF1AD]",
-      textColor: "text-[#6B7280]",
-    },
-    {
-      name: t.gallery,
-      href: "/gallery",
-      hoverBg: "hover:bg-[#F6CCD0]", // Light pink
-      activeBg: "bg-[#F6CCD0]",
+      name: t.timeline,
+      href: "/timeline-order",
+      hoverBg: "hover:bg-[#c2d6f6]",
+      activeBg: "bg-[#a0bff0]",
       textColor: "text-[#6B7280]",
     },
   ];

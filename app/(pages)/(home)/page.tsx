@@ -230,16 +230,16 @@ export default function HomePage() {
   const data1 = {
     title: (
       <>
-        Kembangkan bisnis <br />
-        UMKM dan Ekspor <br />
-        dengan Website
+        Solusi Web e-Commerce, <br />
+        Marketplace & Aplikasi <br />
+        Siap Pakai
       </>
     ),
-    subtitle: "Dapatkan domain murah dan layanan hosting terpercaya.",
-    promoText: "/tahun",
-    promoPrice: "Rp97.000",
-    discountedPrice: "Rp245.000",
-    buttonText: "Cari Domain",
+    subtitle: "Surganya web untuk bisnis UMKM dan Programmer. Tersedia juga Company Profile Premium.",
+    promoText: "Mulai dari",
+    promoPrice: "Rp199.000", // Harga contoh untuk template/source code
+    discountedPrice: "Rp550.000",
+    buttonText: "Lihat Katalog Web",
     // Ganti URL ini dengan URL gambar orang pertama yang diupload
     personImageUrl:
       "https://8nc5ppykod.ufs.sh/f/H265ZJJzf6brvez3grUCM8kgym3AN9S2oHUnjfpulaB7hxYP",

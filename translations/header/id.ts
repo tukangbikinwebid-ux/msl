@@ -1,11 +1,9 @@
 const translations = {
   home: "Beranda",
-  products: "Belanja",
-  howToOrder: "Cara Pemesanan",
-  cekOrder: "Lacak Pesanan",
-  about: "Tentang Kami",
-  news: "Blog",
-  gallery: "Kolaborasi",
+  website: "Cari Website",
+  custom: "Custom Web",
+  question: "Pertanyaan",
+  timeline: "Timeline Order",
   tagline: "Transformasi Digital Anda",
   switchLanguage: "Ganti ke English",
 };

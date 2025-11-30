@@ -1,11 +1,9 @@
 const translations = {
-  home: "Home",
-  products: "Shop",
-  howToOrder: "How to Order",
-  cekOrder: "Track Order",
-  about: "About Us",
-  news: "Blog",
-  gallery: "Collaboration",
+  home: "Beranda",
+  website: "Search Website",
+  custom: "Custom Website",
+  question: "Questions",
+  timeline: "Order Timeline",
   tagline: "Your Digital Transformation",
   switchLanguage: "Switch to Bahasa",
 };

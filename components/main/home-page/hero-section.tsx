@@ -60,7 +60,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         {/* === KONTEN KIRI (TEXT DAN FORM) === */}
         <div className="md:w-1/2 w-full mb-12 md:mb-0 space-y-6">
           <motion.h1
-            className="text-4xl md:text-5xl lg:text-6xl font-extrabold"
+            className="text-4xl md:text-5xl lg:text-5xl font-extrabold"
             style={{ color: blue }}
             variants={itemVariants}
           >
@@ -75,44 +75,65 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           </motion.p>
 
           {/* Promo Price */}
-          <motion.div
-            className="flex items-end space-x-2"
+            <motion.div
+            className="flex items-center space-x-4 bg-blue-50 rounded-xl px-5 py-4 shadow-md w-fit"
             variants={itemVariants}
-          >
+            >
+            <span className="text-base md:text-lg font-medium text-gray-700 bg-yellow-100 px-3 py-1 rounded-full border border-yellow-300">
+              {promoText}
+            </span>
             <span
-              className="text-lg font-semibold line-through"
-              style={{ color: "gray" }}
+              className="text-lg md:text-xl font-semibold line-through text-gray-400"
             >
               {discountedPrice}
             </span>
             <span
-              className="text-4xl md:text-5xl font-extrabold"
+              className="text-3xl md:text-5xl font-extrabold"
               style={{ color: blue }}
             >
               {promoPrice}
             </span>
-            <span className="text-xl font-semibold text-gray-600">
-              {promoText}
-            </span>
-          </motion.div>
+            </motion.div>
 
-          {/* Form Pencarian Domain */}
-          <motion.div
-            className="flex w-full max-w-lg shadow-lg rounded-lg overflow-hidden"
-            variants={itemVariants}
-          >
-            <input
-              type="text"
-              placeholder="Nama domain kamu"
-              className="flex-grow p-3 border-none focus:ring-2 focus:ring-opacity-50 focus:ring-[#2563EB]"
-            />
-            <button
-              className="p-3 font-bold text-white transition duration-300 hover:opacity-90"
-              style={{ backgroundColor: whiteGold }}
+            {/* CTA Buttons */}
+            <motion.div
+              className="flex w-full max-w-lg space-x-4"
+              variants={itemVariants}
             >
-              {buttonText}
-            </button>
-          </motion.div>
+              <a
+              href="/cari-website"
+              className="flex-1 p-3 font-bold text-white text-center rounded-lg transition duration-300 hover:opacity-90"
+              style={{ backgroundColor: whiteGold }}
+              >
+              Cari Website
+              </a>
+              <a
+              href="/custom-web"
+              className="flex-1 p-3 font-bold text-white text-center rounded-lg transition duration-300 hover:opacity-90"
+              style={{ backgroundColor: blue }}
+              >
+              Custom Web
+              </a>
+            </motion.div>
+
+            {/* Tagline Bullet Points */}
+            <motion.ul
+              className="mt-6 space-y-2"
+              variants={itemVariants}
+            >
+              <li className="flex items-center text-gray-700 text-base">
+              <span className="inline-block w-2 h-2 rounded-full mr-3" style={{ backgroundColor: blue }}></span>
+              Fokus pada&nbsp;<b>Quality</b>
+              </li>
+              <li className="flex items-center text-gray-700 text-base">
+              <span className="inline-block w-2 h-2 rounded-full mr-3" style={{ backgroundColor: blue }}></span>
+              <b>Customize</b>&nbsp;sesuai kebutuhan Anda
+              </li>
+              <li className="flex items-center text-gray-700 text-base">
+              <span className="inline-block w-2 h-2 rounded-full mr-3" style={{ backgroundColor: blue }}></span>
+              <b>Easy to Use&nbsp;</b>&amp; user friendly
+              </li>
+            </motion.ul>
         </div>
 
         {/* === KONTEN KANAN (GAMBAR ORANG DAN ASSETS) === */}
