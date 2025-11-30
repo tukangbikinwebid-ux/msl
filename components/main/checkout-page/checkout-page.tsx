@@ -46,7 +46,7 @@ interface ShippingInfo {
 export default function CheckoutPage() {
   // --- KONFIGURASI PAYPAL ---
   const paypalOptions: ReactPayPalScriptOptions = {
-    clientId: "ATHZHj3Se_yg5pLJMDBudBQRRBH5m0r9ofDnhiUJqnuzCq2cbHsGbk_0M1yplEgg1lRwtm3e0LGafVXU",
+    clientId: "BAAB5MmlBYBVJWu_UK_2HzFYVJbRmkAMYZWMg0mJKssqkn6KP10ZdvEQ49WgLVMUnqgdNiAYWpOLD01e9A",
     currency: "USD",
     intent: "capture",
   };
