@@ -251,9 +251,6 @@ export default function HomePage() {
       <SoloCodingSection />
       <PricingSection/>
       <TestimonialsSection />
-      <ArticleSection />
-      <GlobalMarketCta />
-
       {/* CTA Section */}
       <SoloCodingCta />
     </div>

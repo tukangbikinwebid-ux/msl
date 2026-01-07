@@ -427,11 +427,11 @@ export default function ProductsPage() {
             <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
               
               {/* Category Dropdown */}
-              <div className="relative">
+              <div className="relative w-full sm:w-auto">
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="appearance-none pl-4 pr-10 py-2.5 rounded-xl border border-gray-200 bg-white text-sm font-medium hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer transition-all"
+                  className="appearance-none pl-4 pr-10 py-2.5 rounded-xl border border-gray-200 bg-white text-sm font-medium hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer transition-all w-full"
                 >
                   {CATEGORIES.map((cat) => (
                     <option key={cat} value={cat}>{cat}</option>
@@ -441,15 +441,17 @@ export default function ProductsPage() {
               </div>
 
               {/* Sort Dropdown */}
-              <select
-                value={sortMode}
-                onChange={(e) => setSortMode(e.target.value as SortMode)}
-                className="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm font-medium hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer transition-all"
-              >
-                <option value="default">Relevansi</option>
-                <option value="price-low">Harga Terendah</option>
-                <option value="price-high">Harga Tertinggi</option>
-              </select>
+              <div className="w-full sm:w-auto">
+                <select
+                  value={sortMode}
+                  onChange={(e) => setSortMode(e.target.value as SortMode)}
+                  className="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm font-medium hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer transition-all w-full"
+                >
+                  <option value="default">Relevansi</option>
+                  <option value="price-low">Harga Terendah</option>
+                  <option value="price-high">Harga Tertinggi</option>
+                </select>
+              </div>
 
               {/* View Mode Toggle */}
               <div className="hidden md:flex bg-gray-100 p-1 rounded-lg border border-gray-200">
@@ -702,7 +704,7 @@ export default function ProductsPage() {
                   <span className="inline-block px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full mb-3">
                     {selectedProject.category}
                   </span>
-                  <h2 className="text-3xl font-extrabold text-slate-900 mb-4 leading-tight">
+                  <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-4 leading-tight">
                     {selectedProject.name}
                   </h2>
                   

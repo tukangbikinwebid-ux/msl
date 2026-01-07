@@ -77,7 +77,7 @@ const SoloCodingCta: React.FC = () => {
       <div className="container mx-auto px-6 lg:px-12 text-center relative z-10">
         <div className={`max-w-4xl mx-auto ${FredokaClass}`}>
           <motion.h2
-            className="text-4xl lg:text-5xl font-extrabold mb-6 text-gray-900"
+            className="text-3xl lg:text-5xl font-extrabold mb-6 text-gray-900"
             variants={titleVariants}
           >
             Siap Memulai Proyek{" "}

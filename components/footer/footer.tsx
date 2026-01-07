@@ -143,10 +143,10 @@ export default function Footer() {
   ];
 
   const productCategories = [
-    { name: "Full-Stack E-commerce", href: "/product?category=fullstack" },
-    { name: "Landing Page Static", href: "/product?category=landing-page" },
-    { name: "Dashboard SaaS UI", href: "/product?category=saas-ui" },
-    { name: "Custom API & Backend", href: "/product?category=backend" },
+    { name: "Website Company Profile", href: "/cari-website?category=website-company-profile" },
+    { name: "E-Commerce", href: "/cari-website?category=e-commerce" },
+    { name: "Web Aplikasi", href: "/cari-website?category=web-aplikasi" },
+    { name: "Koperasi", href: "/cari-website?category=koperasi" },
   ];
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
@@ -290,34 +290,6 @@ export default function Footer() {
                     </li>
                   ))}
                 </ul>
-
-                {/* Newsletter */}
-                <div>
-                  <h4 className="text-lg font-semibold mb-4 text-white">
-                    Newsletter
-                  </h4>
-                  <p className="text-gray-300 text-sm mb-4">{t["col-3-b"]}</p>
-                  <form onSubmit={handleNewsletterSubmit} className="space-y-3">
-                    <div className="relative">
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder={t["col-3-c"]}
-                        className="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
-                        required
-                      />
-                    </div>
-                    <button
-                      type="submit"
-                      className="w-full py-3 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
-                      style={{ backgroundColor: ACCENT_GOLD, color: BG_DARK }}
-                    >
-                      <Send className="w-4 h-4" />
-                      {t["col-3-d"]}
-                    </button>
-                  </form>
-                </div>
               </div>
 
               {/* FAQ */}

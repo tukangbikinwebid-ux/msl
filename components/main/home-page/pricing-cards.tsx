@@ -112,7 +112,7 @@ export default function PricingCards() {
         </motion.div>
 
         {/* Grid Cards */}
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mt-[-20px] md:mt-0">
           {pricingPlans.map((plan, index) => (
             <motion.div
               key={index}

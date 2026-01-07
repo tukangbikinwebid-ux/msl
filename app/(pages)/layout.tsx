@@ -33,12 +33,12 @@ export default function PagesLayout({
         </main>
 
         {/* Pass all necessary props to CartSidebar */}
-        <CartSidebar
+        {/* <CartSidebar
           isOpen={isOpen}
           onClose={close}
           items={cartItems} // Changed from 'cartItems' to 'items'
           onRemove={removeItem}
-        />
+        /> */}
 
         {!isLoginPage && (
           <>

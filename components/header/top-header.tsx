@@ -87,9 +87,11 @@ export default function Header() {
     }
   };
 
+  // Edit bagian ini di top-header.tsx
+  const openCart = useCart((s) => s.open); // Ambil fungsi open dari zustand
+
   const handleCartClick = () => {
-    window.location.assign("/cart");
-    window.dispatchEvent(new CustomEvent("openCart"));
+    openCart(); // Trigger side modal
   };
 
   const handleUserClick = () => {

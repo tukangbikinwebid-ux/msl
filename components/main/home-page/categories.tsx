@@ -1,42 +1,27 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion"; // Tambah AnimatePresence
-import { X, FileText, CheckCircle } from "lucide-react";
+import React, { useRef, useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  X, FileText, CheckCircle, Ghost, AlertTriangle, 
+  TrendingDown, ZapOff, Zap, Settings, Code2, 
+  BarChart3, MessageSquare, CreditCard, Search, Server 
+} from "lucide-react";
 
-// --- TIPE DATA ---
+
+// --- TYPES & DUMMY DATA (Katalog Kamu) ---
 interface ProjectItem {
-  id: number;
-  slug: string;
-  name: string;
-  category: string;
-  description: string;
-  status: boolean;
-  imageUrl: string;
-  details: string;
-  price: string;
+  id: number; slug: string; name: string; category: string;
+  description: string; status: boolean; imageUrl: string; details: string; price: string;
 }
 
-// --- DATA KATEGORI ---
-const CATEGORIES = [
-  "Website Company Profile",
-  "E-Commerce",
-  "Marketplace",
-  "Koperasi",
-  "Top-up Store",
-  "Web Aplikasi",
-];
+const CATEGORIES = ["E-Commerce", "Marketplace", "Koperasi", "Top-up Store", "Web Aplikasi", "Website Company Profile"];
 
-// --- DUMMY DATA SESUAI REQUEST ---
 const DUMMY_PROJECTS: ProjectItem[] = [
-  // 1. E-COMMERCE
   {
-    id: 1,
-    slug: "ecom-beauty",
-    name: "Template 1 - Kecantikan (Beauty Store)",
-    category: "E-Commerce",
-    description: "Desain elegan dan bersih, fokus pada visual produk skincare/kosmetik.",
+    id: 1, slug: "ecom-beauty", name: "Template 1 - Kecantikan (Beauty Store)",
+    category: "E-Commerce", description: "Desain elegan dan bersih, fokus pada visual produk skincare/kosmetik.",
     status: true,
-    imageUrl: "/sample-image.png",
-    details: "Fitur: Filter jenis kulit, integrasi review video, bundle product system. Cocok untuk brand lokal.",
+    imageUrl: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=500",
+    details: "Fitur: Filter jenis kulit, integrasi review video, bundle product system.",
     price: "Rp. 3.500.000",
   },
   {
@@ -269,297 +254,229 @@ const DUMMY_PROJECTS: ProjectItem[] = [
   },
 ];
 
-// --- KOMPONEN MODAL DETAIL (Tidak berubah banyak, hanya styling) ---
-interface DetailModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  project: ProjectItem | null;
-}
+const blue = "#2563EB";
+const whiteGold = "#EBAD25";
 
-const DetailModal: React.FC<DetailModalProps> = ({ isOpen, onClose, project }) => {
-  if (!isOpen || !project) return null;
-  const blue = "#2563EB";
+// --- COMPONENT: PROBLEM SECTION ---
+
+const ProblemSection = () => {
+  const problems = [
+    { icon: <Ghost className="w-8 h-8 text-red-500" />, title: "Programmer Ngilang", desc: "Proyek belum selesai, tiba-tiba developer susah dihubungi (Ghosting)." },
+    { icon: <AlertTriangle className="w-8 h-8 text-orange-500" />, title: "Hasil 'Asal Jadi'", desc: "Tampilan berantakan, banyak bug, dan tidak sesuai dengan brand image Anda." },
+    { icon: <TrendingDown className="w-8 h-8 text-yellow-500" />, title: "Website Mati Suri", desc: "Website ada, tapi tidak menghasilkan traffic apalagi penjualan." },
+    { icon: <ZapOff className="w-8 h-8 text-gray-500" />, title: "Teknologi Jadul", desc: "Lambat, sulit di-update, dan tidak SEO-friendly. Ketinggalan zaman." },
+  ];
+
+  // 1. State dan Refs untuk menangani limit drag
+  const [width, setWidth] = useState(0);
+  const sliderContainer = useRef<HTMLDivElement>(null);
+
+  // 2. Hitung lebar area yang bisa di-drag saat komponen dimuat
+  useEffect(() => {
+    if (sliderContainer.current) {
+      // Total lebar konten dikurangi lebar layar yang terlihat
+      setWidth(sliderContainer.current.scrollWidth - sliderContainer.current.offsetWidth);
+    }
+    
+    // Opsional: Tambahkan event listener untuk resize window agar kalkulasi tetap akurat
+    const handleResize = () => {
+         if (sliderContainer.current) {
+            setWidth(sliderContainer.current.scrollWidth - sliderContainer.current.offsetWidth);
+         }
+    }
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+
+  }, []);
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white rounded-xl max-w-2xl w-full shadow-2xl overflow-hidden relative max-h-[90vh] overflow-y-auto"
-      >
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/80 hover:bg-white transition shadow text-gray-800"
-        >
-          <X className="w-5 h-5" />
-        </button>
-
-        <div className="bg-gray-100 h-56 w-full flex items-center justify-center overflow-hidden">
-          <img
-            src={project.imageUrl}
-            alt={project.name}
-            className="object-cover w-full h-full"
-          />
-        </div>
-
-        <div className="p-6">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">
-              {project.category}
-            </span>
-          </div>
-          <h2 className="text-2xl font-bold mb-3 text-gray-900">
-            {project.name}
+    <section className="py-20 bg-slate-50 overflow-hidden">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">
+            Lelah dengan Janji Manis Programmer <br className="hidden md:block" /> yang Akhirnya Menghilang?
           </h2>
-
-          <div className="mb-6 space-y-4">
-            <div>
-              <h3 className="text-md font-semibold text-gray-800 mb-1 flex items-center">
-                <FileText className="w-4 h-4 mr-2 text-blue-500" /> Deskripsi:
-              </h3>
-              <p className="text-gray-600 text-sm leading-relaxed">{project.description}</p>
-            </div>
-            <div>
-               <h3 className="text-md font-semibold text-gray-800 mb-1 flex items-center">
-                <CheckCircle className="w-4 h-4 mr-2 text-green-500" /> Detail & Fitur:
-              </h3>
-              <p className="text-gray-600 text-sm leading-relaxed">{project.details}</p>
-            </div>
-          </div>
-
-            <div className="pt-4 border-t flex justify-between items-center">
-            <div>
-              <p className="text-sm text-gray-500">Mulai dari:</p>
-              <div className="flex items-end gap-2">
-              {project.price && (
-                <span className="text-base text-gray-400 line-through font-semibold">
-                {/* Contoh harga coret, misal diskon 20% */}
-                {(() => {
-                  // Ambil angka dari string harga (format: "Rp. 3.500.000")
-                  const num = Number(
-                  project.price.replace(/[^\d]/g, "")
-                  );
-                  if (!num) return null;
-                  // Harga coret 20% lebih mahal
-                  const crossed = num * 1.2;
-                  // Format kembali ke "Rp. x.xxx.xxx"
-                  return (
-                  "Rp. " +
-                  crossed
-                    .toFixed(0)
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-                  );
-                })()}
-                </span>
-              )}
-              <p className="text-2xl font-extrabold" style={{ color: blue }}>
-                {project.price}
-              </p>
-              </div>
-            </div>
-            <button className="bg-[#2563EB] text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 transition">
-              Order Sekarang
-            </button>
-            </div>
+          <p className="text-gray-600 max-w-2xl mx-auto italic">Kami paham rasa frustasi Anda. Di solocoding.id, kami bekerja dengan transparansi dan profesionalisme tinggi.</p>
+          {/* Petunjuk visual kecil untuk user desktop */}
+          <p className="text-sm text-gray-400 mt-4 md:hidden">
+            (Geser ke samping untuk melihat →)
+          </p>
         </div>
-      </motion.div>
+
+        {/* --- AREA SLIDER MULAI --- */}
+        
+        {/* 3. Container Pembungkus: Menyembunyikan overflow dan memberikan kursor 'grab' */}
+        <div 
+            ref={sliderContainer} 
+            className="cursor-grab active:cursor-grabbing"
+        >
+          {/* 4. Track Slider: Area yang bisa di-drag (motion.div) */}
+          <motion.div 
+            drag="x"
+            // Batas drag: kanan mentok di 0, kiri mentok sejauh negatif width yg dihitung
+            dragConstraints={{ right: 0, left: -width }}
+            // Efek elastis saat ditarik melebihi batas
+            dragElastic={0.1} 
+            // Flex agar berjejer horizontal, gap antar kartu, dan padding di awal/akhir agar tidak mepet layar
+            className="flex gap-6 md:gap-8 px-4 md:px-0 pb-8" 
+          >
+            {problems.map((p, i) => (
+              // 5. Kartu Individual
+              <motion.div 
+                key={i} 
+                // PENTING: Berikan minimum width agar kartu tidak tergencet
+                className="min-w-[300px] md:min-w-[380px] p-8 bg-white rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl transition-all relative group"
+              >
+                 {/* Efek hover sedikit naik (opsional, kadang agak aneh di mobile saat di-drag) */}
+                 <motion.div whileHover={{ y: -5 }} transition={{duration: 0.2}}>
+                    <div className="mb-6 p-4 bg-slate-50 rounded-2xl w-fit group-hover:bg-white transition-colors border border-slate-100">
+                        {p.icon}
+                    </div>
+                    <h4 className="text-2xl font-bold mb-3 text-slate-800">{p.title}</h4>
+                    <p className="text-gray-600 text-base leading-relaxed">{p.desc}</p>
+                </motion.div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+        {/* --- AREA SLIDER SELESAI --- */}
+        
+      </div>
+    </section>
+  );
+};
+
+
+// --- COMPONENT: GROWTH FEATURES ---
+const GrowthFeatures = () => {
+  const features = [
+    { icon: <BarChart3 />, title: "Data-Driven", benefit: "Google Analytics & Meta Pixel terpasang untuk tracking konversi iklan." },
+    { icon: <MessageSquare />, title: "Otomasi Notifikasi", benefit: "Integrasi WhatsApp & Email API (Kirim invoice & update otomatis)." },
+    { icon: <CreditCard />, title: "Payment Gateway", benefit: "Terima pembayaran otomatis via QRIS, Transfer Bank, & E-Wallet." },
+    { icon: <Search />, title: "SEO Friendly", benefit: "Struktur coding yang disukai Google agar bisnis Anda mudah ditemukan." },
+    { icon: <Server />, title: "Scalable Infrastructure", benefit: "Server yang siap menampung lonjakan traffic saat Anda promo besar." },
+  ];
+
+  return (
+    <section className="py-20 bg-slate-900 text-white overflow-hidden">
+      <div className="container mx-auto px-6">
+        <div className="flex flex-col lg:flex-row items-center gap-12">
+          <div className="lg:w-1/2">
+            <h2 className="text-3xl md:text-5xl font-extrabold mb-6 leading-tight">
+              Website yang Bekerja <br /> Untuk Anda, <span style={{ color: whiteGold }}>Bukan Sebaliknya.</span>
+            </h2>
+            <p className="text-gray-400 text-lg mb-8">
+              Jangan biarkan website Anda hanya jadi &quot;brosur digital&quot; yang berdebu. Kami menyuntikkan marketing tools di setiap baris kodenya.
+            </p>
+          </div>
+          <div className="lg:w-1/2 grid grid-cols-1 gap-4">
+            {features.map((f, i) => (
+              <motion.div 
+                key={i} initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }}
+                className="flex items-start gap-4 p-5 rounded-xl bg-slate-800/50 border border-slate-700 hover:bg-slate-800 transition-colors"
+              >
+                <div className="p-3 bg-blue-600/20 rounded-lg text-blue-400">{f.icon}</div>
+                <div>
+                  <h4 className="font-bold text-lg">{f.title}</h4>
+                  <p className="text-gray-400 text-sm">{f.benefit}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// --- COMPONENT: CATALOG SECTION (MODIFIED FROM YOUR CODE) ---
+const CatalogSection = () => {
+  const [activeCategory, setActiveCategory] = useState("E-Commerce");
+  const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
+
+  return (
+    <section className="py-24 bg-white" id="catalog">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-5xl font-extrabold mb-4">Solusi <span style={{ color: blue }}>Siap Pakai</span></h2>
+          <p className="text-gray-600 text-lg">Pilih template terbaik untuk percepatan bisnis retail Anda.</p>
+          
+          <div className="flex flex-wrap justify-center gap-2 mt-8">
+            {CATEGORIES.map(cat => (
+              <button 
+                key={cat} onClick={() => setActiveCategory(cat)}
+                className={`px-6 py-2 rounded-full font-semibold border transition-all ${activeCategory === cat ? 'bg-blue-600 text-white border-blue-600 shadow-lg' : 'bg-white text-gray-600 border-gray-200'}`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {DUMMY_PROJECTS.filter(p => p.category === activeCategory).map(project => (
+            <motion.div layout key={project.id} className="group rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all">
+              <div className="h-48 overflow-hidden bg-slate-100 relative">
+                <img src={project.imageUrl} alt={project.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                <div className="absolute inset-0 bg-blue-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <button 
+                    onClick={() => setSelectedProject(project)}
+                    className="bg-white text-blue-600 px-6 py-2 rounded-lg font-bold"
+                  >
+                    Detail Template
+                  </button>
+                </div>
+              </div>
+              <div className="p-6">
+                <h4 className="font-bold text-lg mb-2">{project.name}</h4>
+                <div className="flex justify-between items-end">
+                    <p className="text-blue-600 font-extrabold text-xl">{project.price}</p>
+                    <span className="text-[10px] bg-slate-100 px-2 py-1 rounded font-bold uppercase">{project.category}</span>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      {/* Detail Modal (Logic as you provided) */}
+      <AnimatePresence>
+        {selectedProject && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+            <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }} className="bg-white rounded-2xl max-w-2xl w-full p-8 relative">
+              <button onClick={() => setSelectedProject(null)} className="absolute top-4 right-4"><X /></button>
+              <h2 className="text-2xl font-bold mb-4">{selectedProject.name}</h2>
+              <p className="text-gray-600 mb-6">{selectedProject.description}</p>
+              <div className="bg-blue-50 p-4 rounded-xl mb-6">
+                <p className="font-bold text-blue-800 mb-2">Fitur Unggulan:</p>
+                <p className="text-sm text-blue-700">{selectedProject.details}</p>
+              </div>
+              <div className="flex justify-between items-center">
+                <p className="text-2xl font-bold text-slate-900">{selectedProject.price}</p>
+                <button className="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold">Pesan Sekarang</button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </section>
+  );
+};
+
+// --- MAIN LANDING PAGE COMPONENT ---
+const SolocodingLandingPage = () => {
+  return (
+    <div className="font-sans antialiased text-slate-900">
+      {/* Hero Section (Keep your previous Hero component here) */}
+      
+      <ProblemSection />
+      
+      <CatalogSection /> {/* Ini adalah katalog template kamu */}
+      
+      <GrowthFeatures />
+    
     </div>
   );
 };
 
-// --- KOMPONEN UTAMA ---
-const SoloCodingSection: React.FC = () => {
-  const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  
-  // STATE KATEGORI AKTIF (Default: E-Commerce)
-  const [activeCategory, setActiveCategory] = useState("E-Commerce");
-
-  const blue = "#2563EB";
-  const transparentBlue = "#2563EB0F";
-
-  // FILTER LOGIC
-  const filteredProjects = DUMMY_PROJECTS.filter(
-    (project) => project.category === activeCategory
-  );
-
-  const handleOpenDetail = (slug: string) => {
-    const project = DUMMY_PROJECTS.find((p) => p.slug === slug);
-    setSelectedProject(project || null);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseDetail = () => {
-    setIsModalOpen(false);
-    setSelectedProject(null);
-  };
-
-  return (
-    <>
-      <section
-        className="pt-16 pb-20 rounded-t-[40px] md:rounded-t-[80px]"
-        style={{
-          background: `linear-gradient(to bottom, ${transparentBlue} 5%, #FFFFFF 30%)`,
-        }}
-      >
-        <div className="container mx-auto px-6 lg:px-12">
-          {/* Header */}
-          <motion.div
-            className="text-center mb-12"
-            initial={{ opacity: 0, y: -20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="text-4xl lg:text-5xl font-extrabold mb-2 text-slate-900">
-              Katalog Proyek <span style={{ color: blue }}>Siap Pakai</span>
-            </h2>
-            <p className="text-xl text-gray-700 max-w-4xl mx-auto mb-8">
-              Pilih kategori bisnis Anda dan temukan solusi web yang tepat.
-            </p>
-
-            {/* NAVIGASI KATEGORI (FIXED) */}
-            <div className="flex flex-wrap justify-center gap-3">
-              {CATEGORIES.map((cat, index) => {
-                const isActive = activeCategory === cat;
-                return (
-                  <button
-                    key={index}
-                    onClick={() => setActiveCategory(cat)} // Fungsi Ganti Kategori
-                    className={`px-5 py-2.5 text-sm font-semibold rounded-full border transition-all duration-300 transform ${
-                      isActive
-                        ? "bg-white border-transparent shadow-lg scale-105"
-                        : "bg-white/50 border-gray-200 text-gray-600 hover:bg-white hover:border-gray-300"
-                    }`}
-                    style={isActive ? { color: blue } : {}}
-                  >
-                    {cat}
-                  </button>
-                );
-              })}
-            </div>
-          </motion.div>
-
-          {/* GRID KARTU (DENGAN FILTER & ANIMASI LAYOUT) */}
-          <motion.div 
-            layout // Framer motion prop agar transisi layout smooth saat filter berubah
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 min-h-[400px]"
-          >
-            <AnimatePresence mode="popLayout">
-              {filteredProjects.map((project) => (
-                <motion.div
-                  layout
-                  key={project.id}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.3 }}
-                  className="group cursor-pointer h-full"
-                >
-                  <div className="relative h-full overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 transform border border-gray-100 bg-white">
-                    {/* Gambar */}
-                    <div className="h-56 w-full flex items-center justify-center overflow-hidden bg-gray-50">
-                      <img
-                        src={project.imageUrl}
-                        alt={project.name}
-                        loading="lazy"
-                        className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
-                      />
-                    </div>
-
-                    {/* HOVER OVERLAY */}
-                    <div className="absolute inset-0 bg-slate-900/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-6 z-10">
-                      <div className="text-center">
-                        <h3 className="text-lg font-bold text-white mb-2 line-clamp-2">
-                          {project.name}
-                        </h3>
-                        <p className="text-xs text-gray-300 mb-6 line-clamp-3">
-                          {project.description}
-                        </p>
-
-                        {/* Tombol Aksi */}
-                        <div className="flex gap-3 justify-center">
-                          <button
-                            onClick={() => handleOpenDetail(project.slug)}
-                            className="flex items-center text-white bg-transparent border border-white px-4 py-2 rounded-lg font-semibold hover:bg-white hover:text-black transition-all text-sm"
-                          >
-                            <FileText className="w-4 h-4 mr-1" /> Lihat Detail
-                          </button>
-                          <button
-                            // Tindakan dummy untuk Pilih Template (misalnya langsung ke form order)
-                            className="flex items-center text-black bg-white px-4 py-2 rounded-lg font-bold hover:bg-gray-200 transition-all text-sm"
-                            style={{ color: blue }}
-                          >
-                            Pilih Template
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Footer Card */}
-                    <div className="p-5">
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="text-[10px] uppercase tracking-wider font-bold text-gray-400 border border-gray-200 px-2 py-0.5 rounded">
-                            {project.category}
-                        </span>
-                      </div>
-                      <h4 className="text-lg font-bold text-gray-900 leading-tight mb-2">
-                        {project.name}
-                      </h4>
-                        <div className="flex items-end gap-2">
-                        <span className="text-xs text-gray-400 line-through font-semibold">
-                          {/* Harga coret 20% lebih mahal */}
-                          {(() => {
-                          const num = Number(project.price.replace(/[^\d]/g, ""));
-                          if (!num) return null;
-                          const crossed = num * 1.2;
-                          return (
-                            "Rp. " +
-                            crossed
-                            .toFixed(0)
-                            .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-                          );
-                          })()}
-                        </span>
-                        <p className="text-sm font-bold" style={{ color: blue }}>
-                          {project.price}
-                        </p>
-                        </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </motion.div>
-
-          {filteredProjects.length === 0 && (
-            <div className="text-center py-20 text-gray-500">
-              <p>Belum ada template untuk kategori ini.</p>
-            </div>
-          )}
-
-          {/* Tombol Lihat Lebih Banyak */}
-          <div className="text-center mt-16">
-            <button className="px-8 py-3 font-bold rounded-full text-[#2563EB] border-2 border-[#2563EB] transition duration-300 hover:bg-[#2563EB] hover:text-white hover:shadow-lg">
-              Download Katalog Lengkap (PDF)
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Modal Detail */}
-      <AnimatePresence>
-        {isModalOpen && (
-            <DetailModal
-                isOpen={isModalOpen}
-                onClose={handleCloseDetail}
-                project={selectedProject}
-            />
-        )}
-      </AnimatePresence>
-    </>
-  );
-};
-
-export default SoloCodingSection;
+export default SolocodingLandingPage;

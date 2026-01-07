@@ -1,88 +1,175 @@
-// File: components/main/product-page/cart-sidebar.tsx
-import React from 'react';
-import { CartItem } from '@/hooks/use-cart'; // Import the CartItem type
+// // components/main/product-page/cart-sidebar.tsx
+// "use client";
+// import React from "react";
+// import { motion, AnimatePresence } from "framer-motion";
+// import { X, ShoppingBag, Trash2, ArrowRight } from "lucide-react";
+// import { useRouter } from "next/navigation";
+// import Image from "next/image";
 
-interface CartSidebarProps {
-  isOpen: boolean;
-  onClose: () => void;
-  items: CartItem[]; // Use the CartItem type from your hook
-  onRemove: (id: number) => void;
+// interface CartSidebarProps {
+//   isOpen: boolean;
+//   onClose: () => void;
+//   items: any[];
+//   onRemove: (id: string) => void;
+// }
+
+// const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, items, onRemove }) => {
+//   const router = useRouter();
+//   const primaryBlue = "#2563EB";
+
+//   const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+//   return (
+//     <AnimatePresence>
+//       {isOpen && (
+//         <>
+//           {/* Overlay */}
+//           <motion.div
+//             initial={{ opacity: 0 }}
+//             animate={{ opacity: 1 }}
+//             exit={{ opacity: 0 }}
+//             onClick={onClose}
+//             className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100]"
+//           />
+
+//           {/* Sidebar Panel */}
+//           <motion.div
+//             initial={{ x: "100%" }}
+//             animate={{ x: 0 }}
+//             exit={{ x: "100%" }}
+//             transition={{ type: "spring", damping: 25, stiffness: 200 }}
+//             className="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-[101] flex flex-col"
+//           >
+//             {/* Header */}
+//             <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+//               <div className="flex items-center gap-3">
+//                 <ShoppingBag className="w-6 h-6 text-blue-600" />
+//                 <h2 className="text-xl font-bold text-slate-800">Keranjang Saya</h2>
+//                 <span className="bg-blue-100 text-blue-700 text-xs font-bold px-2.5 py-1 rounded-full">
+//                   {items.length}
+//                 </span>
+//               </div>
+//               <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+//                 <X className="w-6 h-6 text-slate-500" />
+//               </button>
+//             </div>
+
+//             {/* Content List */}
+//             <div className="flex-1 overflow-y-auto p-6 space-y-6">
+//               {items.length > 0 ? (
+//                 items.map((item) => (
+//                   <div key={item.id} className="flex gap-4 group">
+//                     <div className="relative w-20 h-20 rounded-xl bg-slate-100 overflow-hidden flex-shrink-0">
+//                       <Image src={item.imageUrl} alt={item.name} fill className="object-cover" />
+//                     </div>
+//                     <div className="flex-1">
+//                       <h3 className="font-bold text-slate-800 text-sm leading-tight mb-1 group-hover:text-blue-600 transition-colors">
+//                         {item.name}
+//                       </h3>
+//                       <p className="text-blue-600 font-bold text-sm">
+//                         {new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(item.price)}
+//                       </p>
+//                       <div className="flex items-center justify-between mt-2">
+//                         <span className="text-xs text-slate-500 font-medium">Qty: {item.quantity}</span>
+//                         <button 
+//                           onClick={() => onRemove(item.id)}
+//                           className="text-red-400 hover:text-red-600 transition-colors flex items-center gap-1 text-xs"
+//                         >
+//                           <Trash2 className="w-3.5 h-3.5" /> Hapus
+//                         </button>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 ))
+//               ) : (
+//                 <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
+//                   <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center">
+//                     <ShoppingBag className="w-10 h-10 text-slate-300" />
+//                   </div>
+//                   <p className="text-slate-500 font-medium">Wah, keranjangmu masih kosong nih.</p>
+//                   <button onClick={onClose} className="text-blue-600 font-bold text-sm underline">Mulai Belanja</button>
+//                 </div>
+//               )}
+//             </div>
+
+//             {/* Footer / Checkout Button */}
+//             {items.length > 0 && (
+//               <div className="p-6 border-t border-slate-100 bg-slate-50/50">
+//                 <div className="flex items-center justify-between mb-6">
+//                   <span className="text-slate-500 font-medium">Subtotal</span>
+//                   <span className="text-2xl font-extrabold text-slate-900">
+//                      {new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(subtotal)}
+//                   </span>
+//                 </div>
+//                 <button
+//                   onClick={() => {
+//                     onClose();
+//                     router.push("/checkout");
+//                   }}
+//                   className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-white font-bold transition-all shadow-lg hover:shadow-blue-200 hover:-translate-y-0.5 active:scale-95"
+//                   style={{ background: primaryBlue }}
+//                 >
+//                   Checkout Sekarang <ArrowRight className="w-5 h-5" />
+//                 </button>
+//                 <p className="text-center text-[11px] text-slate-400 mt-4">
+//                   Pajak dan biaya pengiriman dihitung saat checkout.
+//                 </p>
+//               </div>
+//             )}
+//           </motion.div>
+//         </>
+//       )}
+//     </AnimatePresence>
+//   );
+// };
+
+// export default CartSidebar;
+
+// hooks/use-cart.ts
+import { create } from 'zustand';
+
+interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  imageUrl: string;
 }
 
-const CartSidebar: React.FC<CartSidebarProps> = ({ 
-  isOpen, 
-  onClose, 
-  items, 
-  onRemove 
-}) => {
-  return (
-    <div className={`fixed inset-0 z-50 ${isOpen ? 'block' : 'hidden'}`}>
-      {/* Backdrop */}
-      <div 
-        className="fixed inset-0 bg-black bg-opacity-50" 
-        onClick={onClose}
-      />
-      
-      {/* Sidebar */}
-      <div className="fixed right-0 top-0 h-full w-80 bg-white shadow-lg transform transition-transform duration-300 ease-in-out">
-        <div className="p-4">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">Keranjang Belanja</h2>
-            <button 
-              onClick={onClose}
-              className="text-gray-500 hover:text-gray-700"
-            >
-              ×
-            </button>
-          </div>
-          
-          {/* Cart Items */}
-          <div className="space-y-4">
-            {items.length === 0 ? (
-              <p className="text-gray-500 text-center py-8">
-                Keranjang kosong
-              </p>
-            ) : (
-              items.map((item) => (
-                <div key={item.id} className="flex items-center space-x-3 p-3 border rounded-lg">
-                  <div className="flex-1">
-                    <h3 className="font-medium text-sm">{item.name}</h3>
-                    <p className="text-xs text-gray-500">
-                      Qty: {item.quantity}
-                    </p>
-                    <p className="text-sm font-semibold text-green-600">
-                      Rp {((item.price || 0) * item.quantity).toLocaleString('id-ID')}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => onRemove(item.id)}
-                    className="text-red-500 hover:text-red-700 text-sm"
-                  >
-                    Hapus
-                  </button>
-                </div>
-              ))
-            )}
-          </div>
-          
-          {/* Total */}
-          {items.length > 0 && (
-            <div className="mt-6 pt-4 border-t">
-              <div className="flex justify-between items-center mb-4">
-                <span className="font-semibold">Total:</span>
-                <span className="font-bold text-lg text-green-600">
-                  Rp {items.reduce((total, item) => total + (item.price || 0) * item.quantity, 0).toLocaleString('id-ID')}
-                </span>
-              </div>
-              <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
-                Checkout
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
+interface CartStore {
+  cartItems: CartItem[];
+  isOpen: boolean;
+  open: () => void;
+  close: () => void;
+  addItem: (item: CartItem) => void;
+  removeItem: (id: string) => void;
+}
 
-export default CartSidebar;
+const useCart = create<CartStore>((set) => ({
+  // Data Dummy untuk Preview
+  cartItems: [
+    {
+      id: "1",
+      name: "Website Company Profile Corporate",
+      price: 6000000,
+      quantity: 1,
+      imageUrl: "/sample-image.png",
+    },
+    {
+      id: "2",
+      name: "E-Commerce Beauty Store",
+      price: 3500000,
+      quantity: 1,
+      imageUrl: "/sample-image.png",
+    },
+  ],
+  isOpen: false,
+  open: () => set({ isOpen: true }),
+  close: () => set({ isOpen: false }),
+  addItem: (item) => set((state) => ({ cartItems: [...state.cartItems, item] })),
+  removeItem: (id) => set((state) => ({
+    cartItems: state.cartItems.filter((i) => i.id !== id)
+  })),
+}));
+
+export default useCart;

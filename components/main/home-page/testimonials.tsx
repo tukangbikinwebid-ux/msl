@@ -82,7 +82,7 @@ const TESTIMONIALS: TestimonialItem[] = [
   },
 ];
 
-// --- VARIAN ANIMASI (Tidak perlu diubah) ---
+// --- VARIAN ANIMASI ---
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -99,7 +99,7 @@ const itemVariants: Variants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
 };
 
-// --- KOMPONEN CUSTOM COUNTER YANG DIPERBAIKI ---
+// --- KOMPONEN CUSTOM COUNTER ---
 interface CounterProps {
   endValue: number;
   label: string;
@@ -115,9 +115,7 @@ const AnimatedCounter: React.FC<CounterProps> = ({
 }) => {
   const nodeRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(nodeRef, { once: true, amount: 0.5 });
-
   const count = useMotionValue(0);
-
   const formattedCount = useTransform(count, (latest) => {
     if (endValue >= 1000) {
       const kValue = Math.floor(latest / 100) / 10;
@@ -147,30 +145,66 @@ const AnimatedCounter: React.FC<CounterProps> = ({
 // --- KOMPONEN UTAMA TESTIMONIALS SECTION ---
 const TestimonialsSection: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(0);
+  // Default items per page adalah 1 untuk mobile-first approach, nanti diupdate via useEffect
+  const [itemsPerPage, setItemsPerPage] = useState(1);
   const carouselRef = useRef<HTMLDivElement>(null);
 
-  // Menentukan berapa banyak kartu yang terlihat per halaman (misal: 3 kartu)
-  const cardsPerPage = 3;
-  const totalPages = Math.ceil(TESTIMONIALS.length / cardsPerPage);
+  // Constants
+  const GAP_SIZE = 32; // Sesuai dengan gap-8 Tailwind (32px)
 
-  // Efek untuk menggeser carousel saat currentPage berubah
+  // 1. Deteksi Ukuran Layar (Responsive Logic)
+  useEffect(() => {
+    const handleResize = () => {
+      // Jika lebar layar < 768px (Tablet/Mobile) tampilkan 1, jika lebih tampilkan 3
+      if (window.innerWidth < 768) {
+        setItemsPerPage(1);
+      } else {
+        setItemsPerPage(3);
+      }
+    };
+
+    // Jalankan saat mount
+    handleResize();
+
+    // Tambahkan listener
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Hitung total halaman berdasarkan data dan items per page saat ini
+  const totalPages = Math.ceil(TESTIMONIALS.length / itemsPerPage);
+
+  // 2. Pastikan currentPage tidak melebihi totalPages saat resize
+  useEffect(() => {
+    if (currentPage >= totalPages) {
+      setCurrentPage(0);
+    }
+  }, [itemsPerPage, totalPages, currentPage]);
+
+  // 3. Logika Animasi Slide
   useEffect(() => {
     if (carouselRef.current) {
-      const cardWidth = carouselRef.current.children[0]?.clientWidth || 0;
-      const gap = 32; // Gap Tailwind: gap-8 = 32px
+      // Kita ambil lebar card pertama untuk referensi pergeseran
+      const firstCard = carouselRef.current.children[0] as HTMLElement;
+      
+      if (firstCard) {
+        const cardWidth = firstCard.offsetWidth;
+        // Total lebar per item (lebar card + gap)
+        const itemTotalWidth = cardWidth + GAP_SIZE;
+        
+        // Geser sejauh: Halaman Aktif * Jumlah Item Per Halaman * Lebar Per Item
+        const offset = currentPage * itemsPerPage * itemTotalWidth;
 
-      // Target pergeseran horizontal (X)
-      // Perhitungan: (Index halaman * Jumlah kartu per halaman) * (Lebar kartu + Gap)
-      // Kita geser berdasarkan jumlah kartu yang sudah terlewati
-      const offset = currentPage * cardsPerPage * (cardWidth + gap);
-
-      animate(
-        carouselRef.current,
-        { x: -offset },
-        { duration: 0.5, type: "spring", damping: 20, stiffness: 100 }
-      );
+        animate(
+          carouselRef.current,
+          { x: -offset },
+          { duration: 0.5, type: "spring", damping: 25, stiffness: 120 }
+        );
+      }
     }
-  }, [currentPage]);
+  }, [currentPage, itemsPerPage]);
 
   const goToPage = (pageIndex: number) => {
     setCurrentPage(pageIndex);
@@ -185,7 +219,7 @@ const TestimonialsSection: React.FC = () => {
       variants={containerVariants}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header dan Judul Utama (Tetap) */}
+        {/* Header dan Judul Utama */}
         <motion.div variants={itemVariants} className="text-center mb-16">
           <span className="inline-block text-sm font-semibold uppercase tracking-widest text-gray-500 mb-2 border px-4 py-1 rounded-full">
             Testimonial
@@ -200,42 +234,32 @@ const TestimonialsSection: React.FC = () => {
           </p>
         </motion.div>
 
-        {/* Statistik / Counter (Tetap) */}
-        <div className="grid grid-cols-3 gap-8 mb-20 border-b border-gray-200 pb-16">
-          {STATS.map((stat) => (
-            <motion.div key={stat.id} variants={itemVariants}>
-              <AnimatedCounter
-                endValue={stat.endValue}
-                suffix={stat.suffix}
-                label={stat.label}
-              />
-            </motion.div>
-          ))}
-        </div>
-
         {/* --- CAROUSEL TESTIMONIALS --- */}
-        <div className="overflow-hidden relative py-2">
+        <div className="overflow-hidden relative py-4">
           <motion.div
             ref={carouselRef}
-            className="flex gap-8" // Grid diubah menjadi Flex
+            className="flex"
+            style={{ gap: `${GAP_SIZE}px` }} // Menggunakan gap inline style agar konsisten dengan perhitungan JS
           >
             {TESTIMONIALS.map((t, index) => (
               <motion.div
                 key={t.id}
-                // Tambahkan flex-shrink-0 untuk mencegah kartu mengecil
                 className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition duration-300 flex flex-col flex-shrink-0"
-                style={{ width: `calc(100% / ${cardsPerPage} - 24px)` }} // Menghitung lebar agar 3 kartu muat (gap-8 = 32px, 32px / 3 * 2 = 21.33px, kita pakai 24px)
+                style={{
+                  // Kalkulasi Lebar Card yang Dinamis:
+                  // (100% lebar container - (Total Gap)) / Jumlah Item
+                  // Rumus Gap: (Jumlah Item - 1) * Ukuran Gap
+                  width: `calc((100% - ${(itemsPerPage - 1) * GAP_SIZE}px) / ${itemsPerPage})`,
+                }}
                 variants={itemVariants}
-                transition={{ delay: index * 0.1, duration: 0.5 }} // Animasi awal
+                transition={{ delay: index * 0.1, duration: 0.5 }}
               >
                 <div className="flex items-center mb-4">
                   <img
                     src={t.avatarUrl}
                     alt={t.name}
                     className="w-12 h-12 rounded-full object-cover mr-3 border-2 border-[#2563EB]"
-                    onError={(
-                      e: React.SyntheticEvent<HTMLImageElement, Event>
-                    ) =>
+                    onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) =>
                       (e.currentTarget.src = `https://ui-avatars.com/api/?name=${t.name
                         .split(" ")
                         .join("+")}&background=2563EB&color=fff`)
@@ -262,16 +286,17 @@ const TestimonialsSection: React.FC = () => {
         </div>
 
         {/* Carousel Pagination Indicators */}
-        <div className="flex justify-center my-12 space-x-2">
+        <div className="flex justify-center my-8 space-x-2">
           {Array.from({ length: totalPages }).map((_, index) => (
             <button
               key={index}
               onClick={() => goToPage(index)}
-              className={`w-2.5 h-2.5 rounded-full transition-colors duration-300 cursor-pointer ${
+              className={`rounded-full transition-all duration-300 cursor-pointer ${
                 index === currentPage
-                  ? "bg-[#2563EB] w-3 h-3"
-                  : "bg-gray-300 hover:bg-gray-400"
+                  ? "bg-[#2563EB] w-8 h-2.5"
+                  : "bg-gray-300 hover:bg-gray-400 w-2.5 h-2.5"
               }`}
+              aria-label={`Go to slide ${index + 1}`}
             />
           ))}
         </div>
