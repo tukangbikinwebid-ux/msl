@@ -33,7 +33,7 @@ const pricingPlans = [
   {
     type: "VPS",
     tag: "Cloud NVMe",
-    title: "Solo Coding Pro",
+    title: "My Solution Lending Pro",
     description:
       "Server performa tinggi untuk deploy aplikasi Next.js & Docker.",
     price: "850.000",

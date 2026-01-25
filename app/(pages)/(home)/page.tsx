@@ -465,6 +465,7 @@ const ProblemSection = () => {
 
   const [width, setWidth] = useState(0);
   const sliderContainer = useRef<HTMLDivElement>(null);
+  const [x, setX] = useState(0);
 
   useEffect(() => {
     if (sliderContainer.current) {
@@ -496,12 +497,17 @@ const ProblemSection = () => {
 
         <div 
             ref={sliderContainer} 
-            className="cursor-grab active:cursor-grabbing"
+            className="cursor-grab active:cursor-grabbing overflow-hidden"
         >
           <motion.div 
             drag="x"
             dragConstraints={{ right: 0, left: -width }}
-            dragElastic={0.1} 
+            dragElastic={0}
+            dragMomentum={false}
+            animate={{ x }}
+            onDragEnd={(_, info) => {
+              setX(info.offset.x);
+            }}
             className="flex gap-6 md:gap-8 px-4 md:px-0 pb-8" 
           >
             {problems.map((p, i) => (
@@ -792,18 +798,19 @@ const PricingSection = () => {
               <label className="block text-sm font-bold text-gray-700 mb-4">
                 Tenor Pinjaman
               </label>
-              <div className="grid grid-cols-5 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4">
                 {tenors.map((tenor) => (
                   <button
                     key={tenor}
                     onClick={() => setSelectedTenor(tenor)}
-                    className={`py-4 px-4 rounded-xl font-bold transition-all ${
+                    className={`py-3 sm:py-4 px-3 sm:px-4 rounded-xl font-bold text-sm sm:text-base transition-all ${
                       selectedTenor === tenor
                         ? "bg-blue-600 text-white shadow-lg scale-105"
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                   >
-                    {tenor} Bulan
+                    {tenor} <span className="hidden sm:inline">Bulan</span>
+                    <span className="sm:hidden">Bl</span>
                   </button>
                 ))}
               </div>
@@ -1216,7 +1223,7 @@ const TestimonialsSection: React.FC = () => {
   );
 };
 
-// ========== COMPONENT: SoloCodingCta ==========
+// ========== COMPONENT: MySolutionLendingCta ==========
 const titleVariants: Variants = {
   hidden: { opacity: 0, y: -20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
@@ -1236,7 +1243,7 @@ const ctaVariants: Variants = {
   },
 };
 
-const SoloCodingCta: React.FC = () => {
+const MySolutionLendingCta: React.FC = () => {
   const router = useRouter();
   const t = useTranslation({ en, id, ms, zh });
   const GOLD = "#EBAD25";
@@ -1543,7 +1550,7 @@ export default function HomePage() {
       <GrowthFeatures />
       <PricingSection/>
       <TestimonialsSection />
-      <SoloCodingCta />
+      <MySolutionLendingCta />
     </div>
   );
 }

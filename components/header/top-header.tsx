@@ -201,16 +201,6 @@ export default function Header() {
                 <FaWhatsapp className="w-5 h-5" />
               </button>
 
-              {/* Telegram Icon */}
-              <button
-                onClick={handleTelegramClick}
-                className="p-2.5 rounded-lg hover:bg-blue-50 text-slate-600 hover:text-blue-500 transition-all duration-300"
-                aria-label="Telegram"
-                title="Hubungi via Telegram"
-              >
-                <FaTelegram className="w-5 h-5" />
-              </button>
-
               {/* Mobile Menu Button */}
               <button
                 onClick={toggleMobileMenu}

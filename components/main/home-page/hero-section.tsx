@@ -108,7 +108,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ personImageUrl }) => {
           {/* Gambar Orang Utama */}
           <motion.img
             src={personImageUrl}
-            alt="Solocoding Professional Developer"
+            alt="mysolutionlending Professional Developer"
             className="relative w-full max-w-[320px] md:max-w-md object-contain z-10 filter drop-shadow-2xl"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}

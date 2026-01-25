@@ -296,7 +296,7 @@ const ProblemSection = () => {
           <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">
             Lelah dengan Janji Manis Programmer <br className="hidden md:block" /> yang Akhirnya Menghilang?
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto italic">Kami paham rasa frustasi Anda. Di solocoding.id, kami bekerja dengan transparansi dan profesionalisme tinggi.</p>
+          <p className="text-gray-600 max-w-2xl mx-auto italic">Kami paham rasa frustasi Anda. Di mysolutionlending.id, kami bekerja dengan transparansi dan profesionalisme tinggi.</p>
           {/* Petunjuk visual kecil untuk user desktop */}
           <p className="text-sm text-gray-400 mt-4 md:hidden">
             (Geser ke samping untuk melihat →)
@@ -464,7 +464,7 @@ const CatalogSection = () => {
 };
 
 // --- MAIN LANDING PAGE COMPONENT ---
-const SolocodingLandingPage = () => {
+const mysolutionlendingLandingPage = () => {
   return (
     <div className="font-sans antialiased text-slate-900">
       {/* Hero Section (Keep your previous Hero component here) */}
@@ -479,4 +479,4 @@ const SolocodingLandingPage = () => {
   );
 };
 
-export default SolocodingLandingPage;
+export default mysolutionlendingLandingPage;

@@ -107,7 +107,7 @@ const REVIEWS = [
   {
     name: "Rina Wijaya",
     role: "Owner Online Shop",
-    text: "Awalnya bingung masalah server, tapi tim SoloCoding bantu install sampai web toko online saya jalan. Supportnya juara!",
+    text: "Awalnya bingung masalah server, tapi tim mysolutionlending bantu install sampai web toko online saya jalan. Supportnya juara!",
     rating: 5,
   },
 ];
@@ -150,7 +150,7 @@ export default function HelpCenterPage() {
               Ada yang bisa kami <span style={{ color: primaryBlue }}>bantu?</span>
             </h1>
             <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              Temukan jawaban seputar produk, teknis, dan layanan SoloCoding disini.
+              Temukan jawaban seputar produk, teknis, dan layanan mysolutionlending disini.
             </p>
           </motion.div>
         </div>

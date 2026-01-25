@@ -78,7 +78,7 @@ const ArticleSection: React.FC = () => {
             className="inline-block text-sm font-semibold uppercase tracking-widest mb-4 px-4 py-1 rounded-full border"
             style={{ borderColor: blue, color: blue }}
           >
-            Artikel Solo Coding
+            Artikel My Solution Lending
           </span>
           <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
             Pelajaran dari Pengalaman Nyata

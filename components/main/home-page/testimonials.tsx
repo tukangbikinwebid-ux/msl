@@ -44,7 +44,7 @@ const TESTIMONIALS: TestimonialItem[] = [
     id: 2,
     name: "David Richards",
     excerpt:
-      "Solo Coding memberikan layanan yang sangat baik, tidak hanya memberikan produk mereka saja, tapi juga konsultasi.",
+      "My Solution Lending memberikan layanan yang sangat baik, tidak hanya memberikan produk mereka saja, tapi juga konsultasi.",
     siteUrl: "https://richards.id",
     avatarUrl: "/avatars/david.jpg",
   },
@@ -60,7 +60,7 @@ const TESTIMONIALS: TestimonialItem[] = [
     id: 4,
     name: "Qori Iramana",
     excerpt:
-      "Senang banget sih pakai template dari Solo Coding, tinggal ganti konten. Jadi hemat biaya dan waktu banget.",
+      "Senang banget sih pakai template dari My Solution Lending, tinggal ganti konten. Jadi hemat biaya dan waktu banget.",
     siteUrl: "https://qori.net",
     avatarUrl: "/avatars/qori.jpg",
   },

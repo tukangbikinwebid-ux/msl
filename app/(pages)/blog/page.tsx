@@ -202,7 +202,7 @@ const BlogSection: React.FC = () => {
           transition={{ duration: 0.8 }}
         >
           <span className="inline-block text-sm font-semibold uppercase tracking-widest mb-4 px-4 py-1 rounded-full border border-gray-400 text-gray-600">
-            Artikel Solo Coding
+            Artikel My Solution Lending
           </span>
           <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
             Pelajaran dari Pengalaman Nyata

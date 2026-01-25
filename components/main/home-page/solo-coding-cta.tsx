@@ -32,7 +32,7 @@ const ctaVariants: Variants = {
   },
 };
 
-const SoloCodingCta: React.FC = () => {
+const mysolutionlendingCta: React.FC = () => {
   return (
     <motion.section
       className="py-20 relative overflow-hidden"
@@ -144,4 +144,4 @@ const SoloCodingCta: React.FC = () => {
   );
 };
 
-export default SoloCodingCta;
+export default mysolutionlendingCta;
