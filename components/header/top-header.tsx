@@ -27,6 +27,18 @@ export default function Header() {
   // Primary Blue Color
   const primaryBlue = "#2563EB";
 
+  // WhatsApp numbers array untuk rolling system
+  const whatsappNumbers = [
+    "6281234567890",
+    "6281234567891",
+    "6281234567892",
+    "6281234567893",
+    "6281234567894",
+  ];
+
+  // State untuk tracking nomor WhatsApp yang sedang aktif
+  const [currentWhatsAppIndex, setCurrentWhatsAppIndex] = useState(0);
+
   // ===== ambil keranjang langsung dari zustand
   const cartItems = useCart((s) => s.cartItems);
   const cartCount = useMemo(
@@ -115,7 +127,14 @@ export default function Header() {
   };
 
   const handleWhatsAppClick = () => {
-    window.open("https://wa.me/6281234567890", "_blank");
+    // Ambil nomor WhatsApp yang sedang aktif
+    const currentNumber = whatsappNumbers[currentWhatsAppIndex];
+    
+    // Buka WhatsApp dengan nomor yang sedang aktif
+    window.open(`https://wa.me/${currentNumber}`, "_blank");
+    
+    // Rotate ke nomor berikutnya untuk klik selanjutnya
+    setCurrentWhatsAppIndex((prevIndex) => (prevIndex + 1) % whatsappNumbers.length);
   };
 
   const handleTelegramClick = () => {
@@ -322,16 +341,6 @@ export default function Header() {
                 style={{ backgroundColor: "#25D366" }}
               >
                  <FaWhatsapp className="w-5 h-5" /> WhatsApp
-              </button>
-              <button 
-                onClick={() => {
-                  handleTelegramClick();
-                  toggleMobileMenu();
-                }}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-white hover:opacity-90 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
-                style={{ backgroundColor: "#0088cc" }}
-              >
-                <FaTelegram className="w-5 h-5" /> Telegram
               </button>
             </div>
             <p className="text-center text-[10px] text-gray-400 mt-4">

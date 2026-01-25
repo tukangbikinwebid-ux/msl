@@ -42,13 +42,9 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import {
-  useGetProductMerkListQuery,
-  useGetProductMerkBySlugQuery,
-} from "@/services/products-merk.service";
+
 import type { ProductMerk } from "@/types/master/product-merk";
 
-import { useGetProductListQuery } from "@/services/product.service";
 import type { Product } from "@/types/admin/product";
 import DotdLoader from "@/components/loader/3dot";
 import { fredoka, sniglet } from "@/lib/fonts";
@@ -67,6 +63,7 @@ function cn(...inputs: ClassValue[]) {
 interface HeroSlide {
   id: number;
   image: string;
+  imageMobile: string; // Gambar square untuk mobile
   title: string;
   subtitle: string;
   ctaText: string;
@@ -78,11 +75,22 @@ const HeroSection: React.FC = () => {
   const blue = "#2563EB";
   const whiteGold = "#EBAD25";
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const slides: HeroSlide[] = [
     {
       id: 1,
       image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=1920",
+      imageMobile: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=800&h=800&fit=crop",
       title: t["hero-title-1"],
       subtitle: t["hero-subtitle"],
       ctaText: t["hero-cta"],
@@ -91,6 +99,7 @@ const HeroSection: React.FC = () => {
     {
       id: 2,
       image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1920",
+      imageMobile: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&h=800&fit=crop",
       title: t["hero-title-2"],
       subtitle: t["hero-subtitle"],
       ctaText: t["hero-cta"],
@@ -99,6 +108,7 @@ const HeroSection: React.FC = () => {
     {
       id: 3,
       image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1920",
+      imageMobile: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&h=800&fit=crop",
       title: t["hero-title-3"],
       subtitle: t["hero-subtitle"],
       ctaText: t["hero-cta"],
@@ -119,55 +129,62 @@ const HeroSection: React.FC = () => {
 
   return (
     <section className="relative w-full overflow-hidden" id="hero">
-      <div className="relative aspect-video w-full">
-        <AnimatePresence mode="wait">
-          {slides.map((slide, index) => {
-            if (index !== currentSlide) return null;
-            return (
-              <motion.div
-                key={slide.id}
-                initial={{ opacity: 0, x: 100 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -100 }}
-                transition={{ duration: 0.8, ease: "easeInOut" }}
-                className="absolute inset-0"
-              >
-                <div className="relative w-full h-full">
-                  <img
-                    src={slide.image}
-                    alt={slide.title}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-                      <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3, duration: 0.8 }}
-                        className="max-w-2xl"
+      <div className="relative aspect-square md:aspect-video w-full">
+        {slides.map((slide, index) => {
+          const isActive = index === currentSlide;
+          return (
+            <motion.div
+              key={slide.id}
+              initial={false}
+              animate={{
+                opacity: isActive ? 1 : 0,
+              }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+              className="absolute inset-0"
+              style={{ 
+                zIndex: isActive ? 1 : 0,
+                pointerEvents: isActive ? "auto" : "none"
+              }}
+            >
+              <div className="relative w-full h-full">
+                <img
+                  src={isMobile ? slide.imageMobile : slide.image}
+                  alt={slide.title}
+                  className="w-full h-full object-cover"
+                  style={{ marginTop: "50px" }}
+                  loading={isActive ? "eager" : "lazy"}
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
+                <div className="absolute inset-0 flex items-center">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+                    <motion.div
+                      animate={{
+                        opacity: isActive ? 1 : 0,
+                        y: isActive ? 0 : 20,
+                      }}
+                      transition={{ delay: 0.15, duration: 0.4 }}
+                      className="max-w-2xl"
+                    >
+                      <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold text-white mb-4 md:mb-6 leading-tight">
+                        {slide.title}
+                      </h1>
+                      <p className="text-base sm:text-lg md:text-xl text-gray-200 mb-6 md:mb-8 leading-relaxed">
+                        {slide.subtitle}
+                      </p>
+                      <a
+                        href={slide.ctaLink}
+                        className="inline-block px-6 py-3 md:px-8 md:py-4 font-bold text-white rounded-xl transition duration-300 hover:scale-105 shadow-lg text-sm md:text-base"
+                        style={{ backgroundColor: blue }}
                       >
-                        <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
-                          {slide.title}
-                        </h1>
-                        <p className="text-lg md:text-xl text-gray-200 mb-8 leading-relaxed">
-                          {slide.subtitle}
-                        </p>
-                        <a
-                          href={slide.ctaLink}
-                          className="inline-block px-8 py-4 font-bold text-white rounded-xl transition duration-300 hover:scale-105 shadow-lg"
-                          style={{ backgroundColor: blue }}
-                        >
-                          {slide.ctaText}
-                        </a>
-                      </motion.div>
-                    </div>
+                        {slide.ctaText}
+                      </a>
+                    </motion.div>
                   </div>
                 </div>
-              </motion.div>
-            );
-          })}
-        </AnimatePresence>
+              </div>
+            </motion.div>
+          );
+        })}
 
         {/* Navigation Dots */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-10">
@@ -465,7 +482,6 @@ const ProblemSection = () => {
 
   const [width, setWidth] = useState(0);
   const sliderContainer = useRef<HTMLDivElement>(null);
-  const [x, setX] = useState(0);
 
   useEffect(() => {
     if (sliderContainer.current) {
@@ -497,17 +513,13 @@ const ProblemSection = () => {
 
         <div 
             ref={sliderContainer} 
-            className="cursor-grab active:cursor-grabbing overflow-hidden"
+            className="cursor-grab active:cursor-grabbing"
         >
           <motion.div 
             drag="x"
             dragConstraints={{ right: 0, left: -width }}
             dragElastic={0}
             dragMomentum={false}
-            animate={{ x }}
-            onDragEnd={(_, info) => {
-              setX(info.offset.x);
-            }}
             className="flex gap-6 md:gap-8 px-4 md:px-0 pb-8" 
           >
             {problems.map((p, i) => (
@@ -1364,27 +1376,10 @@ export default function HomePage() {
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
 
   // ========== Fetch list of categories with pagination ==========
-  const {
-    data: listData,
-    isLoading: isListLoading,
-    isError: isListError,
-  } = useGetProductMerkListQuery({ page, paginate });
 
   // mapping hasil ke variabel categories (TETAP)
-  const categories: ProductMerk[] = useMemo(
-    () => listData?.data ?? [],
-    [listData]
-  );
-
-  const lastPage = listData?.last_page ?? 1;
-  const currentPage = listData?.current_page ?? 1;
-  const total = listData?.total ?? 0;
 
   // ========== Fetch detail by slug when modal open ==========
-  const { data: detailData, isLoading: isDetailLoading } =
-    useGetProductMerkBySlugQuery(selectedSlug ?? "", {
-      skip: !selectedSlug,
-    });
 
   const handleOpenDetail = useCallback((slug: string) => {
     setSelectedSlug(slug);
@@ -1456,16 +1451,6 @@ export default function HomePage() {
   };
 
   // ====== Produk (maks 3) ======
-  const {
-    data: productList,
-    isLoading: isProductsLoading,
-    isError: isProductsError,
-  } = useGetProductListQuery({ page: 1, paginate: 3 });
-
-  const topProducts: Product[] = useMemo(
-    () => productList?.data ?? [],
-    [productList]
-  );
 
   // ====== Tambah ke Keranjang (localStorage: "cart-storage") ======
   const CART_KEY = "cart-storage";
