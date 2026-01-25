@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 
-type Language = "en" | "id";
+type Language = "en" | "id" | "ms" | "zh";
 
 type LanguageContextType = {
   lang: Language;
@@ -22,7 +22,7 @@ export const LanguageProvider = ({
 
   useEffect(() => {
     const saved = localStorage.getItem("colore-language") as Language | null;
-    if (saved) setLang(saved);
+    if (saved && ["en", "id", "ms", "zh"].includes(saved)) setLang(saved);
   }, []);
 
   const switchLang = (newLang: Language) => {

@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
-import { Menu, X, ShoppingCart, User, Globe, Code2 } from "lucide-react";
+import { Menu, X, Globe, Code2 } from "lucide-react";
+import { FaWhatsapp, FaTelegram } from "react-icons/fa";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -33,35 +34,58 @@ export default function Header() {
     [cartItems]
   );
 
-  // Mapping warna hover untuk setiap menu (Updated ke Tema Biru SoloCoding)
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  // Mapping warna hover untuk setiap menu (Updated untuk My Solution Lending)
   const menuItemColors = [
     {
-      name: t.website,
-      href: "/cari-website",
+      name: "Program Pinjaman",
+      href: "#catalog",
+      onClick: (e: React.MouseEvent) => {
+        e.preventDefault();
+        scrollToSection("catalog");
+      },
       hoverBg: "hover:bg-blue-50",
       activeBg: "bg-blue-100",
       textColor: "text-slate-600",
       activeText: "text-blue-700",
     },
     {
-      name: t.custom,
-      href: "/custom-website",
+      name: "Simulasi",
+      href: "#simulation",
+      onClick: (e: React.MouseEvent) => {
+        e.preventDefault();
+        scrollToSection("simulation");
+      },
       hoverBg: "hover:bg-blue-50",
       activeBg: "bg-blue-100",
       textColor: "text-slate-600",
       activeText: "text-blue-700",
     },
     {
-      name: t.question,
-      href: "/pertanyaan",
+      name: "Kelebihan",
+      href: "#why-us",
+      onClick: (e: React.MouseEvent) => {
+        e.preventDefault();
+        scrollToSection("why-us");
+      },
       hoverBg: "hover:bg-blue-50",
       activeBg: "bg-blue-100",
       textColor: "text-slate-600",
       activeText: "text-blue-700",
     },
     {
-      name: t.timeline,
-      href: "/timeline-order",
+      name: "Testimonial",
+      href: "#testimonial",
+      onClick: (e: React.MouseEvent) => {
+        e.preventDefault();
+        scrollToSection("testimonial");
+      },
       hoverBg: "hover:bg-blue-50",
       activeBg: "bg-blue-100",
       textColor: "text-slate-600",
@@ -78,7 +102,10 @@ export default function Header() {
   const toggleMobileMenu = () => setIsMobileMenuOpen((v) => !v);
 
   const toggleLanguage = () => {
-    const newLang = lang === "id" ? "en" : "id";
+    const languages: Array<"id" | "en" | "ms" | "zh"> = ["id", "en", "ms", "zh"];
+    const currentIndex = languages.indexOf(lang as "id" | "en" | "ms" | "zh");
+    const nextIndex = (currentIndex + 1) % languages.length;
+    const newLang = languages[nextIndex];
     switchLang(newLang);
     if (typeof window !== "undefined") {
       window.dispatchEvent(
@@ -87,20 +114,12 @@ export default function Header() {
     }
   };
 
-  // Edit bagian ini di top-header.tsx
-  const openCart = useCart((s) => s.open); // Ambil fungsi open dari zustand
-
-  const handleCartClick = () => {
-    openCart(); // Trigger side modal
+  const handleWhatsAppClick = () => {
+    window.open("https://wa.me/6281234567890", "_blank");
   };
 
-  const handleUserClick = () => {
-    if (status === "loading") return;
-    if (session?.user) {
-      router.push("/me");
-    } else {
-      router.push("/login");
-    }
+  const handleTelegramClick = () => {
+    window.open("https://t.me/mysolutionlending", "_blank");
   };
 
   const isActiveLink = (href: string) => {
@@ -124,8 +143,8 @@ export default function Header() {
             <Link href="/" className="flex items-center gap-3 group">
               <div className="relative flex items center gap-2">
                 <Image
-                  src="/logo-text.png"
-                  alt="Solo Coding Logo"
+                  src="/logo-msl.webp"
+                  alt="My Solution Lending Logo"
                   width={200}
                   height={100}
                   className="rounded-lg object-contain"
@@ -133,15 +152,16 @@ export default function Header() {
               </div>
             </Link>
 
-            {/* Desktop Menu */}
-            <div className="hidden lg:flex items-center gap-2">
+            {/* Desktop Menu - Dipindahkan ke kanan sebelum icon */}
+            <div className="hidden lg:flex items-center gap-2 flex-1 justify-end mr-4">
               {menuItemColors.map((item) => {
                 const active = isActiveLink(item.href);
                 return (
-                  <Link
+                  <a
                     key={item.name}
                     href={item.href}
-                    className={`relative font-semibold transition-all duration-300 py-2.5 px-4 group rounded-lg text-sm ${
+                    onClick={item.onClick}
+                    className={`relative font-semibold transition-all duration-300 py-2.5 px-4 group rounded-lg text-sm cursor-pointer ${
                       active
                         ? `${item.activeBg} ${item.activeText} shadow-sm`
                         : `${item.textColor} ${item.hoverBg} hover:text-blue-600`
@@ -152,7 +172,7 @@ export default function Header() {
                     {active && (
                        <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-blue-600 rounded-full" />
                     )}
-                  </Link>
+                  </a>
                 );
               })}
             </div>
@@ -167,31 +187,28 @@ export default function Header() {
               >
                 <Globe className="w-4 h-4 text-blue-600" />
                 <span className="text-xs font-bold">
-                  {lang.toUpperCase()}
+                  {lang === "id" ? "ID" : lang === "en" ? "EN" : lang === "ms" ? "MS" : "ZH"}
                 </span>
               </button>
 
-              {/* User Icon */}
+              {/* WhatsApp Icon */}
               <button
-                onClick={handleUserClick}
-                className="p-2.5 rounded-lg hover:bg-gray-100 text-slate-600 hover:text-blue-600 transition-all duration-300"
-                aria-label="User"
+                onClick={handleWhatsAppClick}
+                className="p-2.5 rounded-lg hover:bg-green-50 text-slate-600 hover:text-green-600 transition-all duration-300"
+                aria-label="WhatsApp"
+                title="Hubungi via WhatsApp"
               >
-                <User className="w-5 h-5" />
+                <FaWhatsapp className="w-5 h-5" />
               </button>
 
-              {/* Cart */}
+              {/* Telegram Icon */}
               <button
-                onClick={handleCartClick}
-                className="relative p-2.5 cursor-pointer rounded-lg hover:bg-blue-50 text-slate-600 hover:text-blue-600 transition-all duration-300"
-                aria-label="Cart"
+                onClick={handleTelegramClick}
+                className="p-2.5 rounded-lg hover:bg-blue-50 text-slate-600 hover:text-blue-500 transition-all duration-300"
+                aria-label="Telegram"
+                title="Hubungi via Telegram"
               >
-                <ShoppingCart className="w-5 h-5" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-[#2563EB] text-white text-[10px] font-bold min-w-[18px] h-[18px] rounded-full flex items-center justify-center border-2 border-white shadow-sm">
-                    {cartCount > 99 ? "99+" : cartCount}
-                  </span>
-                )}
+                <FaTelegram className="w-5 h-5" />
               </button>
 
               {/* Mobile Menu Button */}
@@ -236,9 +253,9 @@ export default function Header() {
                 </div>
                 <div>
                   <h2 className="font-bold text-lg leading-tight text-slate-800">
-                    solocoding.id
+                    My Solution Lending
                   </h2>
-                  <p className="text-xs text-slate-500">Jasa Website & Aplikasi</p>
+                  <p className="text-xs text-slate-500">Solusi Pinjaman Terpercaya</p>
                 </div>
               </div>
               <button
@@ -256,10 +273,13 @@ export default function Header() {
             {menuItemColors.map((item, index) => {
               const active = isActiveLink(item.href);
               return (
-                <Link
+                <a
                   key={item.name}
                   href={item.href}
-                  onClick={toggleMobileMenu}
+                  onClick={(e) => {
+                    item.onClick(e);
+                    toggleMobileMenu();
+                  }}
                   className={`flex items-center gap-4 p-4 rounded-xl font-semibold transition-all duration-300 group border ${
                     active
                       ? "bg-white text-blue-700 border-blue-200 shadow-sm"
@@ -283,7 +303,7 @@ export default function Header() {
                   {active && (
                     <div className="w-1 h-5 bg-blue-600 rounded-full" />
                   )}
-                </Link>
+                </a>
               );
             })}
 
@@ -295,7 +315,7 @@ export default function Header() {
               <Globe className="w-5 h-5 text-blue-600" />
               <span className="flex-1 text-left">{t.switchLanguage}</span>
               <span className="text-xs font-bold text-white bg-blue-600 px-2 py-1 rounded">
-                {lang === "id" ? "EN" : "ID"}
+                {lang === "id" ? "EN" : lang === "en" ? "MS" : lang === "ms" ? "ZH" : "ID"}
               </span>
             </button>
           </div>
@@ -304,24 +324,28 @@ export default function Header() {
           <div className="p-6 border-t border-gray-200 bg-white">
             <div className="flex flex-col gap-3">
               <button 
-                onClick={handleUserClick}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-slate-600 border border-gray-200 hover:bg-gray-50 transition-all"
+                onClick={() => {
+                  handleWhatsAppClick();
+                  toggleMobileMenu();
+                }}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-white border border-green-500 hover:bg-green-600 transition-all"
+                style={{ backgroundColor: "#25D366" }}
               >
-                 <User className="w-4 h-4" /> Akun Saya
+                 <FaWhatsapp className="w-5 h-5" /> WhatsApp
               </button>
               <button 
                 onClick={() => {
-                    toggleMobileMenu();
-                    router.push("/cari-website");
+                  handleTelegramClick();
+                  toggleMobileMenu();
                 }}
-                className="w-full text-white py-3 rounded-xl font-bold hover:opacity-90 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
-                style={{ background: primaryBlue }}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-white hover:opacity-90 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
+                style={{ backgroundColor: "#0088cc" }}
               >
-                Belanja Sekarang
+                <FaTelegram className="w-5 h-5" /> Telegram
               </button>
             </div>
             <p className="text-center text-[10px] text-gray-400 mt-4">
-              © 2025 SoloCoding ID. All rights reserved.
+              © 2025 My Solution Lending. All rights reserved.
             </p>
           </div>
         </div>
