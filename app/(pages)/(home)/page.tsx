@@ -89,27 +89,9 @@ const HeroSection: React.FC = () => {
   const slides: HeroSlide[] = [
     {
       id: 1,
-      image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=1920",
-      imageMobile: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=800&h=800&fit=crop",
+      image: "/hero-slide.webp?q=80&w=1920",
+      imageMobile: "/hero-slide.webp?q=80&w=800&h=800&fit=crop",
       title: t["hero-title-1"],
-      subtitle: t["hero-subtitle"],
-      ctaText: t["hero-cta"],
-      ctaLink: "#apply",
-    },
-    {
-      id: 2,
-      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1920",
-      imageMobile: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&h=800&fit=crop",
-      title: t["hero-title-2"],
-      subtitle: t["hero-subtitle"],
-      ctaText: t["hero-cta"],
-      ctaLink: "#apply",
-    },
-    {
-      id: 3,
-      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1920",
-      imageMobile: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&h=800&fit=crop",
-      title: t["hero-title-3"],
       subtitle: t["hero-subtitle"],
       ctaText: t["hero-cta"],
       ctaLink: "#apply",
@@ -634,7 +616,7 @@ const CatalogSection = () => {
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500">Limit:</span>
-                    <span className="font-bold">Rp {program.minAmount.toLocaleString("id-ID")} - Rp {program.maxAmount.toLocaleString("id-ID")}</span>
+                    <span className="font-bold">RM {program.minAmount.toLocaleString("en-MY")} - RM {program.maxAmount.toLocaleString("en-MY")}</span>
                   </div>
                 </div>
               </div>
@@ -659,7 +641,7 @@ const CatalogSection = () => {
                 <p className="font-bold text-blue-800 mb-2">Detail Program:</p>
                 <div className="space-y-2 text-sm text-blue-700">
                   <p>Bunga: {selectedProgram.interestRate}% per bulan</p>
-                  <p>Limit Pinjaman: Rp {selectedProgram.minAmount.toLocaleString("id-ID")} - Rp {selectedProgram.maxAmount.toLocaleString("id-ID")}</p>
+                  <p>Limit Pinjaman: RM {selectedProgram.minAmount.toLocaleString("en-MY")} - RM {selectedProgram.maxAmount.toLocaleString("en-MY")}</p>
                   <p>Tenor: 6, 9, 12, 18, atau 24 bulan</p>
                 </div>
               </div>
@@ -683,11 +665,29 @@ const PricingSection = () => {
     blue: "#2563EB",
   };
 
-  const [loanAmount, setLoanAmount] = useState(10000000);
+  const [loanAmount, setLoanAmount] = useState(10000); // Default RM 10,000
   const [selectedTenor, setSelectedTenor] = useState(12);
-  const interestRate = 1.2; // 1.2% per bulan
+  
+  // Konfigurasi tenor dengan bunga sesuai tabel Excel "table ansuran new.xlsx"
+  const tenorConfig = [
+    { months: 6, interestRate: 0.80 },   // 0.80% per bulan untuk 6 bulan
+    { months: 12, interestRate: 0.80 },  // 0.80% per bulan untuk 12 bulan
+    { months: 24, interestRate: 0.70 },  // 0.70% per bulan untuk 24 bulan
+    { months: 36, interestRate: 0.60 },  // 0.60% per bulan untuk 36 bulan
+    { months: 48, interestRate: 0.50 },  // 0.50% per bulan untuk 48 bulan
+    { months: 60, interestRate: 0.40 },  // 0.40% per bulan untuk 60 bulan
+    { months: 72, interestRate: 0.30 },  // 0.30% per bulan untuk 72 bulan
+  ];
 
-  const tenors = [6, 9, 12, 18, 24];
+  const tenors = tenorConfig.map(t => t.months);
+  
+  // Ambil bunga untuk tenor yang dipilih
+  const getInterestRate = (tenor: number) => {
+    const config = tenorConfig.find(t => t.months === tenor);
+    return config?.interestRate || 0.80;
+  };
+
+  const currentInterestRate = getInterestRate(selectedTenor);
 
   // Modal registration state
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
@@ -698,14 +698,47 @@ const PricingSection = () => {
     password: "",
   });
 
-  const calculateMonthlyPayment = (amount: number, tenor: number, rate: number) => {
+  // Fungsi perhitungan cicilan sesuai formula Excel "table ansuran new.xlsx"
+  // Menggunakan BUNGA FLAT (bukan anuitas)
+  // Formula Flat:
+  // - Total Bunga = Principal × Rate × Tenor
+  // - Total Bayar = Principal + Total Bunga
+  // - Cicilan Bulanan = Total Bayar / Tenor
+  // Bunga per tenor sesuai tabel Excel:
+  // 6 bulan: 0.80%, 12 bulan: 0.80%, 24 bulan: 0.70%, 36 bulan: 0.60%, 
+  // 48 bulan: 0.50%, 60 bulan: 0.40%, 72 bulan: 0.30%
+  const calculateLoanDetails = (amount: number, tenor: number, rate: number) => {
+    if (amount <= 0 || tenor <= 0 || rate < 0) {
+      return {
+        monthlyPayment: 0,
+        totalInterest: 0,
+        totalPayment: 0,
+      };
+    }
+    
     const monthlyRate = rate / 100;
-    const monthlyPayment = (amount * monthlyRate * Math.pow(1 + monthlyRate, tenor)) / (Math.pow(1 + monthlyRate, tenor) - 1);
-    return Math.round(monthlyPayment);
+    
+    // Hitung total bunga (flat)
+    const totalInterest = amount * monthlyRate * tenor;
+    
+    // Total yang harus dibayar
+    const totalPayment = amount + totalInterest;
+    
+    // Cicilan bulanan
+    const monthlyPayment = totalPayment / tenor;
+    
+    return {
+      monthlyPayment: Math.round(monthlyPayment * 100) / 100, // Bulatkan ke 2 desimal
+      totalInterest: Math.round(totalInterest * 100) / 100,
+      totalPayment: Math.round(totalPayment * 100) / 100,
+    };
   };
 
-  const monthlyPayment = calculateMonthlyPayment(loanAmount, selectedTenor, interestRate);
-  const totalPayment = monthlyPayment * selectedTenor;
+  // Hitung cicilan bulanan, total bunga, dan total pembayaran menggunakan bunga flat
+  const loanDetails = calculateLoanDetails(loanAmount, selectedTenor, currentInterestRate);
+  const monthlyPayment = loanDetails.monthlyPayment;
+  const totalPayment = loanDetails.totalPayment;
+  const totalInterest = loanDetails.totalInterest;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -788,20 +821,20 @@ const PricingSection = () => {
               </label>
               <input
                 type="range"
-                min="1000000"
-                max="100000000"
-                step="1000000"
+                min="5000"
+                max="200000"
+                step="1000"
                 value={loanAmount}
                 onChange={(e) => setLoanAmount(Number(e.target.value))}
                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
               />
               <div className="flex justify-between mt-2">
-                <span className="text-sm text-gray-500">Rp 1.000.000</span>
-                <span className="text-sm text-gray-500">Rp 100.000.000</span>
+                <span className="text-sm text-gray-500">RM 5,000</span>
+                <span className="text-sm text-gray-500">RM 200,000</span>
               </div>
               <div className="text-center mt-4">
                 <span className="text-3xl font-extrabold text-blue-600">
-                  Rp {loanAmount.toLocaleString("id-ID")}
+                  RM {loanAmount.toLocaleString("en-MY")}
                 </span>
               </div>
             </div>
@@ -829,24 +862,71 @@ const PricingSection = () => {
             </div>
 
             <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl p-6 mb-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center mb-4">
                 <div>
                   <p className="text-sm text-gray-600 mb-2">Cicilan Bulanan</p>
                   <p className="text-2xl font-extrabold text-blue-600">
-                    Rp {monthlyPayment.toLocaleString("id-ID")}
+                    RM {monthlyPayment.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600 mb-2">Total Pembayaran</p>
                   <p className="text-2xl font-extrabold text-blue-600">
-                    Rp {totalPayment.toLocaleString("id-ID")}
+                    RM {totalPayment.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600 mb-2">Bunga</p>
                   <p className="text-2xl font-extrabold text-blue-600">
-                    {interestRate}% / bulan
+                    {currentInterestRate}% / bulan
                   </p>
+                </div>
+              </div>
+              
+              {/* Informasi Detail Pinjaman */}
+              <div className="border-t border-blue-200 pt-4 mt-4">
+                <div className="bg-white/60 rounded-lg p-4">
+                  <p className="text-xs text-gray-600 mb-2 font-semibold">Informasi Pinjaman:</p>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                    <div>
+                      <p className="text-gray-500">Jumlah Pinjaman</p>
+                      <p className="font-bold text-gray-900">RM {loanAmount.toLocaleString("en-MY")}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500">Tenor</p>
+                      <p className="font-bold text-gray-900">{selectedTenor} Bulan</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500">Total Bunga</p>
+                      <p className="font-bold text-orange-600">RM {totalInterest.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-500">Bunga Efektif</p>
+                      <p className="font-bold text-gray-900">
+                        {loanAmount > 0 ? (((totalPayment - loanAmount) / loanAmount) * 100).toFixed(2) : "0.00"}%
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Informasi Aturan Bunga */}
+                <div className="mt-3 bg-blue-50 rounded-lg p-3">
+                  <p className="text-xs font-semibold text-blue-900 mb-1">Aturan Bunga per Tenor:</p>
+                  <div className="flex flex-wrap gap-2 text-xs text-blue-800">
+                    <span>6 bln: 0.80%</span>
+                    <span>•</span>
+                    <span>12 bln: 0.80%</span>
+                    <span>•</span>
+                    <span>24 bln: 0.70%</span>
+                    <span>•</span>
+                    <span>36 bln: 0.60%</span>
+                    <span>•</span>
+                    <span>48 bln: 0.50%</span>
+                    <span>•</span>
+                    <span>60 bln: 0.40%</span>
+                    <span>•</span>
+                    <span>72 bln: 0.30%</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1433,10 +1513,10 @@ export default function HomePage() {
   const safeCategoryImg = (img: ProductMerk["image"]) =>
     typeof img === "string" && img.length > 0 ? img : "/kategori.webp";
 
-  const formatIDR = (value: number | string) => {
+  const formatRM = (value: number | string) => {
     const num = typeof value === "string" ? Number(value) : value ?? 0;
-    if (!Number.isFinite(num)) return "Rp 0";
-    return `Rp ${num.toLocaleString("id-ID")}`;
+    if (!Number.isFinite(num)) return "RM 0";
+    return `RM ${num.toLocaleString("en-MY")}`;
   };
 
   const safeProductImg = (img: Product["image"]) =>
