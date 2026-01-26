@@ -18,11 +18,17 @@ export const LanguageProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [lang, setLang] = useState<Language>("id");
+  const [lang, setLang] = useState<Language>("ms"); // Default: Bahasa Malaysia
 
   useEffect(() => {
     const saved = localStorage.getItem("colore-language") as Language | null;
-    if (saved && ["en", "id", "ms", "zh"].includes(saved)) setLang(saved);
+    if (saved && ["en", "id", "ms", "zh"].includes(saved)) {
+      setLang(saved);
+    } else {
+      // Set default to Malaysia if no saved language
+      setLang("ms");
+      localStorage.setItem("colore-language", "ms");
+    }
   }, []);
 
   const switchLang = (newLang: Language) => {

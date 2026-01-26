@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
-import { Menu, X, Globe, Code2 } from "lucide-react";
+import { Menu, X, Globe, Code2, ChevronDown, LogIn } from "lucide-react";
 import { FaWhatsapp, FaTelegram } from "react-icons/fa";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { usePathname, useRouter } from "next/navigation";
@@ -19,6 +19,7 @@ export default function Header() {
   const { lang, switchLang } = useLanguage();
   const t = useTranslation({ id, en });
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
 
   const pathname = usePathname();
   const router = useRouter();
@@ -113,18 +114,41 @@ export default function Header() {
 
   const toggleMobileMenu = () => setIsMobileMenuOpen((v) => !v);
 
-  const toggleLanguage = () => {
-    const languages: Array<"id" | "en" | "ms" | "zh"> = ["id", "en", "ms", "zh"];
-    const currentIndex = languages.indexOf(lang as "id" | "en" | "ms" | "zh");
-    const nextIndex = (currentIndex + 1) % languages.length;
-    const newLang = languages[nextIndex];
+  const languages = [
+    { code: "ms" as const, name: "Bahasa Malaysia", flag: "🇲🇾" },
+    { code: "en" as const, name: "English", flag: "🇬🇧" },
+    { code: "zh" as const, name: "中文", flag: "🇨🇳" },
+  ];
+
+  const currentLanguage = languages.find(l => l.code === lang) || languages[0];
+
+  const handleLanguageChange = (newLang: "en" | "ms" | "zh") => {
     switchLang(newLang);
+    setIsLanguageDropdownOpen(false);
     if (typeof window !== "undefined") {
       window.dispatchEvent(
         new CustomEvent("languageChanged", { detail: newLang })
       );
     }
   };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('.language-dropdown')) {
+        setIsLanguageDropdownOpen(false);
+      }
+    };
+
+    if (isLanguageDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isLanguageDropdownOpen]);
 
   const handleWhatsAppClick = () => {
     // Ambil nomor WhatsApp yang sedang aktif
@@ -139,6 +163,10 @@ export default function Header() {
 
   const handleTelegramClick = () => {
     window.open("https://t.me/mysolutionlending", "_blank");
+  };
+
+  const handleLoginClick = () => {
+    window.location.href = "http://apps.mysolutionlending.com/";
   };
 
   const isActiveLink = (href: string) => {
@@ -198,16 +226,53 @@ export default function Header() {
 
             {/* Right Side Actions */}
             <div className="flex items-center gap-3">
-              {/* Language Toggle - Desktop */}
+              {/* Language Dropdown - Desktop */}
+              <div className="hidden lg:block relative language-dropdown">
+                <button
+                  onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 transition-all duration-300 border border-blue-200"
+                  title={t.switchLanguage}
+                >
+                  <Globe className="w-4 h-4 text-blue-600" />
+                  <span className="text-xs font-bold">
+                    {currentLanguage.flag} {currentLanguage.code.toUpperCase()}
+                  </span>
+                  <ChevronDown className={`w-3 h-3 text-blue-600 transition-transform ${isLanguageDropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {/* Dropdown Menu */}
+                {isLanguageDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
+                    {languages.map((language) => (
+                      <button
+                        key={language.code}
+                        onClick={() => handleLanguageChange(language.code)}
+                        className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
+                          lang === language.code
+                            ? "bg-blue-50 text-blue-700 font-semibold"
+                            : "text-gray-700 hover:bg-gray-50"
+                        }`}
+                      >
+                        <span className="text-lg">{language.flag}</span>
+                        <span className="flex-1 text-left">{language.name}</span>
+                        {lang === language.code && (
+                          <span className="text-blue-600">✓</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Login Button - Desktop */}
               <button
-                onClick={toggleLanguage}
-                className="hidden lg:flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 transition-all duration-300 group border border-blue-200"
-                title={t.switchLanguage}
+                onClick={handleLoginClick}
+                className="hidden lg:flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-all duration-300 shadow-sm hover:shadow-md"
+                aria-label="Login"
+                title="Login ke Aplikasi"
               >
-                <Globe className="w-4 h-4 text-blue-600" />
-                <span className="text-xs font-bold">
-                  {lang === "id" ? "ID" : lang === "en" ? "EN" : lang === "ms" ? "MS" : "ZH"}
-                </span>
+                <LogIn className="w-4 h-4" />
+                <span>Login</span>
               </button>
 
               {/* WhatsApp Icon */}
@@ -254,12 +319,6 @@ export default function Header() {
           <div className="p-6 border-b border-gray-100 bg-white">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div 
-                  className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg"
-                  style={{ background: primaryBlue }}
-                >
-                  <Code2 className="text-white w-6 h-6" />
-                </div>
                 <div>
                   <h2 className="font-bold text-lg leading-tight text-slate-800">
                     My Solution Lending
@@ -316,17 +375,45 @@ export default function Header() {
               );
             })}
 
-            {/* Language Toggle - Mobile */}
-            <button
-              onClick={toggleLanguage}
-              className="flex items-center gap-4 p-4 w-full rounded-xl text-slate-700 hover:bg-white font-semibold transition-all duration-300 mt-6 border border-gray-200 bg-white shadow-sm"
-            >
-              <Globe className="w-5 h-5 text-blue-600" />
-              <span className="flex-1 text-left">{t.switchLanguage}</span>
-              <span className="text-xs font-bold text-white bg-blue-600 px-2 py-1 rounded">
-                {lang === "id" ? "EN" : lang === "en" ? "MS" : lang === "ms" ? "ZH" : "ID"}
-              </span>
-            </button>
+            {/* Login Button - Mobile */}
+            <div className="mt-6">
+              <button
+                onClick={() => {
+                  handleLoginClick();
+                  toggleMobileMenu();
+                }}
+                className="w-full flex items-center justify-center gap-3 py-3.5 px-4 rounded-xl font-bold text-white transition-all duration-300 shadow-md hover:shadow-lg"
+                style={{ backgroundColor: primaryBlue }}
+              >
+                <LogIn className="w-5 h-5" />
+                <span>Login</span>
+              </button>
+            </div>
+
+            {/* Language Dropdown - Mobile */}
+            <div className="mt-6 space-y-2">
+              <p className="text-xs font-semibold text-gray-500 px-4 mb-2">Pilih Bahasa:</p>
+              {languages.map((language) => (
+                <button
+                  key={language.code}
+                  onClick={() => {
+                    handleLanguageChange(language.code);
+                    toggleMobileMenu();
+                  }}
+                  className={`w-full flex items-center gap-4 p-4 rounded-xl font-semibold transition-all duration-300 border ${
+                    lang === language.code
+                      ? "bg-blue-50 text-blue-700 border-blue-200 shadow-sm"
+                      : "bg-white text-slate-600 border-gray-200 hover:border-gray-300"
+                  }`}
+                >
+                  <span className="text-xl">{language.flag}</span>
+                  <span className="flex-1 text-left">{language.name}</span>
+                  {lang === language.code && (
+                    <span className="text-blue-600 font-bold">✓</span>
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Mobile Footer */}

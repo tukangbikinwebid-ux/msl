@@ -28,6 +28,7 @@ import {
   Info,
 } from "lucide-react";
 import { useTranslation } from "@/hooks/use-translation";
+import { useLanguage } from "@/contexts/LanguageContext";
 import en from "@/translations/home/en";
 import id from "@/translations/home/id";
 import ms from "@/translations/home/ms";
@@ -59,11 +60,140 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// ========== API INTERFACES ==========
+interface SliderTranslation {
+  id: number;
+  slider_id: number;
+  locale: string;
+  title: string;
+  description: string;
+}
+
+interface SliderItem {
+  id: number;
+  title: string;
+  description: string;
+  order: number;
+  status: number;
+  image_original: string;
+  image_avif: string;
+  translations: SliderTranslation[];
+}
+
+interface SliderApiResponse {
+  code: number;
+  message: string;
+  data: SliderItem[];
+}
+
+interface ProgramPinjamanTranslation {
+  id: number;
+  program_pinjaman_id: number;
+  locale: string;
+  title: string;
+  description: string;
+}
+
+interface ProgramPinjamanItem {
+  id: number;
+  title: string;
+  description: string;
+  bunga: number;
+  limit_from: number;
+  limit_to: number;
+  tenor: number | null;
+  status: number;
+  image_original: string;
+  image_avif: string;
+  translations: ProgramPinjamanTranslation[];
+}
+
+interface ProgramPinjamanApiResponse {
+  code: number;
+  message: string;
+  data: ProgramPinjamanItem[];
+}
+
+interface TestimoniTranslation {
+  id: number;
+  testimoni_id: number;
+  locale: string;
+  title: string;
+  description: string;
+}
+
+interface TestimoniItem {
+  id: number;
+  title: string;
+  description: string;
+  order: number;
+  status: number;
+  image_original: string;
+  image_avif: string;
+  translations: TestimoniTranslation[];
+}
+
+interface TestimoniApiResponse {
+  code: number;
+  message: string;
+  data: TestimoniItem[];
+}
+
+// Helper function to map language code to API locale
+const mapLangToApiLocale = (lang: string): string => {
+  switch (lang) {
+    case "en":
+      return "en";
+    case "ms":
+    case "id":
+      return "my";
+    case "zh":
+      return "cn";
+    default:
+      return "my";
+  }
+};
+
+// Helper function to strip HTML tags
+const stripHtml = (html: string): string => {
+  return html.replace(/<[^>]*>/g, "").trim();
+};
+
+// ========== DUMMY DATA (Fallback) ==========
+const DUMMY_SLIDERS: SliderItem[] = [
+  {
+    id: 1,
+    title: "Penyelesaian Pinjaman",
+    description: "<div>Platform pinjaman digital yang dipercayai untuk membantu anda mencapai matlamat kewangan dengan proses yang mudah dan telus.</div>",
+    order: 0,
+    status: 1,
+    image_original: "/hero-slide.webp",
+    image_avif: "/hero-slide.webp",
+    translations: [
+      { id: 1, slider_id: 1, locale: "en", title: "Loan Solution", description: "<div>Trusted digital lending platform to help you achieve your financial goals with an easy and transparent process.</div>" },
+      { id: 2, slider_id: 1, locale: "my", title: "Penyelesaian Pinjaman", description: "<div>Platform pinjaman digital yang dipercayai untuk membantu anda mencapai matlamat kewangan dengan proses yang mudah dan telus.</div>" },
+      { id: 3, slider_id: 1, locale: "cn", title: "贷款解决方案", description: "<div>值得信赖的数字贷款平台，帮助您通过简单透明的流程实现财务目标。</div>" },
+    ],
+  },
+];
+
+const DUMMY_PROGRAMS: ProgramPinjamanItem[] = [
+  { id: 1, title: "Pinjaman Personal", description: "<div>Pinjaman untuk kebutuhan pribadi dengan proses cepat dan mudah</div>", bunga: 0.8, limit_from: 5000, limit_to: 100000, tenor: null, status: 1, image_original: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=500", image_avif: "", translations: [{ id: 1, program_pinjaman_id: 1, locale: "en", title: "Personal Loan", description: "<div>Loan for personal needs with fast and easy process</div>" }, { id: 2, program_pinjaman_id: 1, locale: "my", title: "Pinjaman Personal", description: "<div>Pinjaman untuk keperluan peribadi dengan proses cepat dan mudah</div>" }, { id: 3, program_pinjaman_id: 1, locale: "cn", title: "个人贷款", description: "<div>个人需求贷款，流程快速简便</div>" }] },
+  { id: 2, title: "Pinjaman Usaha", description: "<div>Pinjaman untuk mengembangkan bisnis Anda dengan bunga kompetitif</div>", bunga: 1.2, limit_from: 5000, limit_to: 500000, tenor: null, status: 1, image_original: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=500", image_avif: "", translations: [{ id: 4, program_pinjaman_id: 2, locale: "en", title: "Business Loan", description: "<div>Loan to grow your business with competitive interest</div>" }, { id: 5, program_pinjaman_id: 2, locale: "my", title: "Pinjaman Perniagaan", description: "<div>Pinjaman untuk mengembangkan perniagaan anda dengan faedah kompetitif</div>" }, { id: 6, program_pinjaman_id: 2, locale: "cn", title: "商业贷款", description: "<div>以有竞争力的利息发展您的业务</div>" }] },
+  { id: 3, title: "Pinjaman KPR", description: "<div>Pinjaman untuk membeli rumah impian Anda dengan cicilan ringan</div>", bunga: 0.8, limit_from: 50000, limit_to: 2000000, tenor: null, status: 1, image_original: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=500", image_avif: "", translations: [{ id: 7, program_pinjaman_id: 3, locale: "en", title: "Home Loan", description: "<div>Loan to buy your dream home with easy installments</div>" }, { id: 8, program_pinjaman_id: 3, locale: "my", title: "Pinjaman Rumah", description: "<div>Pinjaman untuk membeli rumah idaman anda dengan ansuran ringan</div>" }, { id: 9, program_pinjaman_id: 3, locale: "cn", title: "房屋贷款", description: "<div>轻松分期购买梦想家园</div>" }] },
+];
+
+const DUMMY_TESTIMONIALS: TestimoniItem[] = [
+  { id: 1, title: "Mugilan A/L", description: "<div>Saya sangat berpuas hati dengan perkhidmatan My Solution Lending. Proses permohonan pinjaman sangat mudah dan pantas.</div>", order: 0, status: 1, image_original: "https://ui-avatars.com/api/?name=Mugilan&background=2563EB&color=fff", image_avif: "", translations: [{ id: 1, testimoni_id: 1, locale: "en", title: "Mugilan A/L", description: "<div>I am very satisfied with My Solution Lending service. The loan application process is very easy and fast.</div>" }, { id: 2, testimoni_id: 1, locale: "my", title: "Mugilan A/L", description: "<div>Saya sangat berpuas hati dengan perkhidmatan My Solution Lending. Proses permohonan pinjaman sangat mudah dan pantas.</div>" }, { id: 3, testimoni_id: 1, locale: "cn", title: "Mugilan A/L", description: "<div>我对My Solution Lending的服务非常满意。贷款申请流程非常简单快捷。</div>" }] },
+  { id: 2, title: "Ahmad Fauzi", description: "<div>Dokumen minimal, proses online semua. Tidak perlu keluar rumah, pinjaman sudah cair.</div>", order: 1, status: 1, image_original: "https://ui-avatars.com/api/?name=Ahmad&background=2563EB&color=fff", image_avif: "", translations: [{ id: 4, testimoni_id: 2, locale: "en", title: "Ahmad Fauzi", description: "<div>Minimal documents, all online process. No need to leave home, loan already disbursed.</div>" }, { id: 5, testimoni_id: 2, locale: "my", title: "Ahmad Fauzi", description: "<div>Dokumen minimal, proses dalam talian semua. Tidak perlu keluar rumah, pinjaman sudah cair.</div>" }, { id: 6, testimoni_id: 2, locale: "cn", title: "Ahmad Fauzi", description: "<div>最少文件，全程在线。无需出门，贷款已发放。</div>" }] },
+  { id: 3, title: "Siti Nurhaliza", description: "<div>Customer service sangat responsif, membantu dari awal sampai akhir. Terima kasih My Solution Lending!</div>", order: 2, status: 1, image_original: "https://ui-avatars.com/api/?name=Siti&background=2563EB&color=fff", image_avif: "", translations: [{ id: 7, testimoni_id: 3, locale: "en", title: "Siti Nurhaliza", description: "<div>Customer service is very responsive, helping from start to finish. Thank you My Solution Lending!</div>" }, { id: 8, testimoni_id: 3, locale: "my", title: "Siti Nurhaliza", description: "<div>Perkhidmatan pelanggan sangat responsif, membantu dari awal hingga akhir. Terima kasih My Solution Lending!</div>" }, { id: 9, testimoni_id: 3, locale: "cn", title: "Siti Nurhaliza", description: "<div>客服非常响应，从头到尾都在帮助。谢谢My Solution Lending！</div>" }] },
+];
+
 // ========== COMPONENT: HeroSection (Slider 16:9) ==========
 interface HeroSlide {
   id: number;
   image: string;
-  imageMobile: string; // Gambar square untuk mobile
+  imageMobile: string;
   title: string;
   subtitle: string;
   ctaText: string;
@@ -72,10 +202,43 @@ interface HeroSlide {
 
 const HeroSection: React.FC = () => {
   const t = useTranslation({ en, id, ms, zh });
+  const { lang } = useLanguage();
   const blue = "#2563EB";
-  const whiteGold = "#EBAD25";
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [sliderData, setSliderData] = useState<SliderItem[]>(DUMMY_SLIDERS);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch slider data from API
+  useEffect(() => {
+    const fetchSliders = async () => {
+      try {
+        const response = await fetch("https://cms.mysolutionlending.com/api/v1/slider", {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          cache: "no-store",
+        });
+
+        if (!response.ok) throw new Error("API request failed");
+
+        const data: SliderApiResponse = await response.json();
+
+        if (data.code === 200 && data.data && data.data.length > 0) {
+          setSliderData(data.data);
+        } else {
+          console.warn("Slider API returned empty data, using fallback");
+          setSliderData(DUMMY_SLIDERS);
+        }
+      } catch (error) {
+        console.warn("Failed to fetch sliders, using fallback:", error);
+        setSliderData(DUMMY_SLIDERS);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchSliders();
+  }, []);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -86,19 +249,28 @@ const HeroSection: React.FC = () => {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const slides: HeroSlide[] = [
-    {
-      id: 1,
-      image: "/hero-slide.webp?q=80&w=1920",
-      imageMobile: "/hero-slide.webp?q=80&w=800&h=800&fit=crop",
-      title: t["hero-title-1"],
-      subtitle: t["hero-subtitle"],
-      ctaText: t["hero-cta"],
-      ctaLink: "#apply",
-    },
-  ];
+  // Map slider data to HeroSlide format with translations
+  const slides: HeroSlide[] = useMemo(() => {
+    const apiLocale = mapLangToApiLocale(lang);
+    
+    return sliderData.map((slider) => {
+      // Find translation for current locale
+      const translation = slider.translations.find((t) => t.locale === apiLocale);
+      
+      return {
+        id: slider.id,
+        image: slider.image_original || "/hero-slide.webp",
+        imageMobile: slider.image_original || "/hero-slide.webp",
+        title: translation?.title || slider.title,
+        subtitle: stripHtml(translation?.description || slider.description),
+        ctaText: t["hero-cta"],
+        ctaLink: "#simulation",
+      };
+    });
+  }, [sliderData, lang, t]);
 
   useEffect(() => {
+    if (slides.length <= 1) return;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
@@ -108,6 +280,16 @@ const HeroSection: React.FC = () => {
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
   };
+
+  if (isLoading) {
+    return (
+      <section className="relative w-full overflow-hidden" id="hero">
+        <div className="relative aspect-square md:aspect-video w-full bg-gray-200 animate-pulse flex items-center justify-center">
+          <div className="text-gray-400">Loading...</div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative w-full overflow-hidden" id="hero">
@@ -169,36 +351,42 @@ const HeroSection: React.FC = () => {
         })}
 
         {/* Navigation Dots */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-          {slides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                index === currentSlide
-                  ? "w-8 bg-white"
-                  : "w-2 bg-white/50 hover:bg-white/75"
-              }`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
+        {slides.length > 1 && (
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+            {slides.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  index === currentSlide
+                    ? "w-8 bg-white"
+                    : "w-2 bg-white/50 hover:bg-white/75"
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        )}
 
         {/* Navigation Arrows */}
-        <button
-          onClick={() => goToSlide((currentSlide - 1 + slides.length) % slides.length)}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full transition-all duration-300"
-          aria-label="Previous slide"
-        >
-          <ArrowRight className="w-6 h-6 text-white rotate-180" />
-        </button>
-        <button
-          onClick={() => goToSlide((currentSlide + 1) % slides.length)}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full transition-all duration-300"
-          aria-label="Next slide"
-        >
-          <ArrowRight className="w-6 h-6 text-white" />
-        </button>
+        {slides.length > 1 && (
+          <>
+            <button
+              onClick={() => goToSlide((currentSlide - 1 + slides.length) % slides.length)}
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full transition-all duration-300"
+              aria-label="Previous slide"
+            >
+              <ArrowRight className="w-6 h-6 text-white rotate-180" />
+            </button>
+            <button
+              onClick={() => goToSlide((currentSlide + 1) % slides.length)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full transition-all duration-300"
+              aria-label="Next slide"
+            >
+              <ArrowRight className="w-6 h-6 text-white" />
+            </button>
+          </>
+        )}
       </div>
     </section>
   );
@@ -210,14 +398,6 @@ interface ProjectItem {
   description: string; status: boolean; imageUrl: string; details: string; price: string;
 }
 
-const LOAN_PROGRAMS = [
-  { id: 1, name: "Pinjaman Personal", description: "Pinjaman untuk kebutuhan pribadi dengan proses cepat dan mudah", minAmount: 1000000, maxAmount: 50000000, interestRate: 1.5, imageUrl: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=500" },
-  { id: 2, name: "Pinjaman Usaha", description: "Pinjaman untuk mengembangkan bisnis Anda dengan bunga kompetitif", minAmount: 5000000, maxAmount: 500000000, interestRate: 1.2, imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=500" },
-  { id: 3, name: "Pinjaman KPR", description: "Pinjaman untuk membeli rumah impian Anda dengan cicilan ringan", minAmount: 50000000, maxAmount: 2000000000, interestRate: 0.8, imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=500" },
-  { id: 4, name: "Pinjaman KKB", description: "Pinjaman untuk membeli kendaraan dengan proses mudah dan cepat", minAmount: 10000000, maxAmount: 500000000, interestRate: 1.0, imageUrl: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=500" },
-  { id: 5, name: "Pinjaman Pendidikan", description: "Pinjaman untuk biaya pendidikan dengan bunga rendah", minAmount: 2000000, maxAmount: 100000000, interestRate: 0.9, imageUrl: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=500" },
-  { id: 6, name: "Pinjaman Kesehatan", description: "Pinjaman untuk kebutuhan kesehatan dan medis", minAmount: 1000000, maxAmount: 50000000, interestRate: 1.3, imageUrl: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?q=80&w=500" },
-];
 
 const DUMMY_PROJECTS: ProjectItem[] = [
   {
@@ -570,9 +750,146 @@ const GrowthFeatures = () => {
 };
 
 // ========== COMPONENT: CatalogSection (Loan Programs) ==========
+interface ProgramDisplay {
+  id: number;
+  name: string;
+  description: string;
+  interestRate: number;
+  minAmount: number;
+  maxAmount: number;
+  imageUrl: string;
+}
+
+// Catalog section translations (hardcoded for type safety)
+const catalogTranslations: Record<string, Record<string, string>> = {
+  en: {
+    detail: "Program Details",
+    interest: "Interest",
+    month: "month",
+    months: "months",
+    limit: "Limit",
+    perMonth: "per month",
+    loanLimit: "Loan Limit",
+    tenor: "Tenor",
+    startFrom: "Starting from",
+  },
+  ms: {
+    detail: "Butiran Program",
+    interest: "Faedah",
+    month: "bulan",
+    months: "bulan",
+    limit: "Had",
+    perMonth: "sebulan",
+    loanLimit: "Had Pinjaman",
+    tenor: "Tempoh",
+    startFrom: "Bermula dari",
+  },
+  id: {
+    detail: "Detail Program",
+    interest: "Bunga",
+    month: "bulan",
+    months: "bulan",
+    limit: "Limit",
+    perMonth: "per bulan",
+    loanLimit: "Limit Pinjaman",
+    tenor: "Tenor",
+    startFrom: "Mulai dari",
+  },
+  zh: {
+    detail: "项目详情",
+    interest: "利息",
+    month: "月",
+    months: "个月",
+    limit: "限额",
+    perMonth: "每月",
+    loanLimit: "贷款限额",
+    tenor: "期限",
+    startFrom: "起价",
+  },
+};
+
 const CatalogSection = () => {
   const t = useTranslation({ en, id, ms, zh });
-  const [selectedProgram, setSelectedProgram] = useState<typeof LOAN_PROGRAMS[0] | null>(null);
+  const { lang } = useLanguage();
+  const ct = catalogTranslations[lang] || catalogTranslations.ms;
+  const [selectedProgram, setSelectedProgram] = useState<ProgramDisplay | null>(null);
+  const [programData, setProgramData] = useState<ProgramPinjamanItem[]>(DUMMY_PROGRAMS);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch program pinjaman from API
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      try {
+        const response = await fetch("https://cms.mysolutionlending.com/api/v1/program-pinjaman", {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          cache: "no-store",
+        });
+
+        if (!response.ok) throw new Error("API request failed");
+
+        const data: ProgramPinjamanApiResponse = await response.json();
+
+        if (data.code === 200 && data.data && data.data.length > 0) {
+          setProgramData(data.data);
+        } else {
+          console.warn("Program Pinjaman API returned empty data, using fallback");
+          setProgramData(DUMMY_PROGRAMS);
+        }
+      } catch (error) {
+        console.warn("Failed to fetch programs, using fallback:", error);
+        setProgramData(DUMMY_PROGRAMS);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPrograms();
+  }, []);
+
+  // Map program data with translations
+  const programs: ProgramDisplay[] = useMemo(() => {
+    const apiLocale = mapLangToApiLocale(lang);
+    
+    return programData.map((program) => {
+      const translation = program.translations.find((t) => t.locale === apiLocale);
+      
+      return {
+        id: program.id,
+        name: translation?.title || program.title,
+        description: stripHtml(translation?.description || program.description),
+        interestRate: program.bunga,
+        minAmount: program.limit_from,
+        maxAmount: program.limit_to,
+        imageUrl: program.image_original || "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=500",
+      };
+    });
+  }, [programData, lang]);
+
+  if (isLoading) {
+    return (
+      <section className="py-24 bg-white" id="catalog">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <div className="h-12 bg-gray-200 animate-pulse rounded w-1/2 mx-auto mb-4"></div>
+            <div className="h-6 bg-gray-200 animate-pulse rounded w-1/3 mx-auto"></div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="rounded-2xl overflow-hidden border border-slate-100 animate-pulse">
+                <div className="h-48 bg-gray-200"></div>
+                <div className="p-6 space-y-3">
+                  <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-full"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-24 bg-white" id="catalog">
@@ -585,7 +902,7 @@ const CatalogSection = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {LOAN_PROGRAMS.map((program) => (
+          {programs.map((program) => (
             <motion.div 
               key={program.id} 
               layout
@@ -602,7 +919,7 @@ const CatalogSection = () => {
                     onClick={() => setSelectedProgram(program)}
                     className="bg-white text-blue-600 px-6 py-2 rounded-lg font-bold"
                   >
-                    Detail Program
+                    {ct.detail}
                   </button>
                 </div>
               </div>
@@ -611,11 +928,11 @@ const CatalogSection = () => {
                 <p className="text-gray-600 text-sm mb-4">{program.description}</p>
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">Bunga:</span>
-                    <span className="font-bold text-blue-600">{program.interestRate}% / bulan</span>
+                    <span className="text-gray-500">{ct.interest}:</span>
+                    <span className="font-bold text-blue-600">{program.interestRate}% / {ct.month}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">Limit:</span>
+                    <span className="text-gray-500">{ct.limit}:</span>
                     <span className="font-bold">RM {program.minAmount.toLocaleString("en-MY")} - RM {program.maxAmount.toLocaleString("en-MY")}</span>
                   </div>
                 </div>
@@ -638,16 +955,18 @@ const CatalogSection = () => {
               <h2 className="text-2xl font-bold mb-4">{selectedProgram.name}</h2>
               <p className="text-gray-600 mb-6">{selectedProgram.description}</p>
               <div className="bg-blue-50 p-4 rounded-xl mb-6">
-                <p className="font-bold text-blue-800 mb-2">Detail Program:</p>
+                <p className="font-bold text-blue-800 mb-2">{ct.detail}:</p>
                 <div className="space-y-2 text-sm text-blue-700">
-                  <p>Bunga: {selectedProgram.interestRate}% per bulan</p>
-                  <p>Limit Pinjaman: RM {selectedProgram.minAmount.toLocaleString("en-MY")} - RM {selectedProgram.maxAmount.toLocaleString("en-MY")}</p>
-                  <p>Tenor: 6, 9, 12, 18, atau 24 bulan</p>
+                  <p>{ct.interest}: {selectedProgram.interestRate}% {ct.perMonth}</p>
+                  <p>{ct.loanLimit}: RM {selectedProgram.minAmount.toLocaleString("en-MY")} - RM {selectedProgram.maxAmount.toLocaleString("en-MY")}</p>
+                  <p>{ct.tenor}: 6, 12, 24, 36, 48, 60, 72 {ct.months}</p>
                 </div>
               </div>
               <div className="flex justify-between items-center">
-                <p className="text-lg font-bold text-slate-900">Mulai dari {selectedProgram.interestRate}% / bulan</p>
-                <button className="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold">Ajukan Sekarang</button>
+                <p className="text-lg font-bold text-slate-900">{ct.startFrom} {selectedProgram.interestRate}% / {ct.month}</p>
+                <a href="#simulation" onClick={() => setSelectedProgram(null)} className="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors">
+                  {t["cta-button-1"]}
+                </a>
               </div>
             </motion.div>
           </div>
@@ -1052,11 +1371,10 @@ interface StatItem {
   suffix: string;
 }
 
-interface TestimonialItem {
+interface TestimonialDisplay {
   id: number;
   name: string;
   excerpt: string;
-  siteUrl: string;
   avatarUrl: string;
 }
 
@@ -1064,57 +1382,6 @@ const STATS: StatItem[] = [
   { id: 1, endValue: 50000, label: "Pinjaman Telah Dicairkan", suffix: "+" },
   { id: 2, endValue: 98, label: "Tingkat Kepuasan Pelanggan", suffix: "%" },
   { id: 3, endValue: 24, label: "Jam Persetujuan Cepat", suffix: " Jam" },
-];
-
-const TESTIMONIALS: TestimonialItem[] = [
-  {
-    id: 1,
-    name: "Budi Santoso",
-    excerpt:
-      "Proses pinjaman sangat cepat, hanya 1 hari sudah cair. Bunga juga kompetitif dan tidak ada biaya tersembunyi. Sangat puas!",
-    siteUrl: "#",
-    avatarUrl: "/avatars/budi.jpg",
-  },
-  {
-    id: 2,
-    name: "Sari Indrawati",
-    excerpt:
-      "Customer service sangat responsif, membantu dari awal sampai akhir. Pinjaman untuk modal usaha saya sudah cair dan bisnis berkembang.",
-    siteUrl: "#",
-    avatarUrl: "/avatars/sari.jpg",
-  },
-  {
-    id: 3,
-    name: "Ahmad Fauzi",
-    excerpt:
-      "Dokumen minimal, proses online semua. Tidak perlu keluar rumah, pinjaman sudah cair. My Solution Lending memang solusi terbaik!",
-    siteUrl: "#",
-    avatarUrl: "/avatars/ahmad.jpg",
-  },
-  {
-    id: 4,
-    name: "Dewi Lestari",
-    excerpt:
-      "Bunga rendah dan transparan. Tidak ada biaya tersembunyi seperti tempat lain. Cicilan juga fleksibel sesuai kemampuan.",
-    siteUrl: "#",
-    avatarUrl: "/avatars/dewi.jpg",
-  },
-  {
-    id: 5,
-    name: "Rudi Hermawan",
-    excerpt:
-      "Pinjaman untuk KPR rumah impian saya. Proses mudah, persetujuan cepat, dan cicilan ringan. Terima kasih My Solution Lending!",
-    siteUrl: "#",
-    avatarUrl: "/avatars/rudi.jpg",
-  },
-  {
-    id: 6,
-    name: "Maya Sari",
-    excerpt:
-      "Layanan 24/7 sangat membantu. Kapan saja ada pertanyaan langsung dijawab. Pinjaman untuk pendidikan anak sudah cair.",
-    siteUrl: "#",
-    avatarUrl: "/avatars/maya.jpg",
-  },
 ];
 
 const testimonialsContainerVariants: Variants = {
@@ -1177,11 +1444,61 @@ const AnimatedCounter: React.FC<CounterProps> = ({
 
 const TestimonialsSection: React.FC = () => {
   const t = useTranslation({ en, id, ms, zh });
+  const { lang } = useLanguage();
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(1);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const [testimoniData, setTestimoniData] = useState<TestimoniItem[]>(DUMMY_TESTIMONIALS);
+  const [isLoading, setIsLoading] = useState(true);
 
   const GAP_SIZE = 32;
+
+  // Fetch testimonials from API
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const response = await fetch("https://cms.mysolutionlending.com/api/v1/testimoni", {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          cache: "no-store",
+        });
+
+        if (!response.ok) throw new Error("API request failed");
+
+        const data: TestimoniApiResponse = await response.json();
+
+        if (data.code === 200 && data.data && data.data.length > 0) {
+          setTestimoniData(data.data);
+        } else {
+          console.warn("Testimoni API returned empty data, using fallback");
+          setTestimoniData(DUMMY_TESTIMONIALS);
+        }
+      } catch (error) {
+        console.warn("Failed to fetch testimonials, using fallback:", error);
+        setTestimoniData(DUMMY_TESTIMONIALS);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTestimonials();
+  }, []);
+
+  // Map testimonial data with translations
+  const testimonials: TestimonialDisplay[] = useMemo(() => {
+    const apiLocale = mapLangToApiLocale(lang);
+    
+    return testimoniData.map((item) => {
+      const translation = item.translations.find((t) => t.locale === apiLocale);
+      
+      return {
+        id: item.id,
+        name: translation?.title || item.title,
+        excerpt: stripHtml(translation?.description || item.description),
+        avatarUrl: item.image_original || `https://ui-avatars.com/api/?name=${encodeURIComponent(item.title)}&background=2563EB&color=fff`,
+      };
+    });
+  }, [testimoniData, lang]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -1197,7 +1514,7 @@ const TestimonialsSection: React.FC = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const totalPages = Math.ceil(TESTIMONIALS.length / itemsPerPage);
+  const totalPages = Math.ceil(testimonials.length / itemsPerPage);
 
   useEffect(() => {
     if (currentPage >= totalPages) {
@@ -1206,7 +1523,7 @@ const TestimonialsSection: React.FC = () => {
   }, [itemsPerPage, totalPages, currentPage]);
 
   useEffect(() => {
-    if (carouselRef.current) {
+    if (carouselRef.current && carouselRef.current.children.length > 0) {
       const firstCard = carouselRef.current.children[0] as HTMLElement;
       
       if (firstCard) {
@@ -1221,11 +1538,40 @@ const TestimonialsSection: React.FC = () => {
         );
       }
     }
-  }, [currentPage, itemsPerPage]);
+  }, [currentPage, itemsPerPage, testimonials.length]);
 
   const goToPage = (pageIndex: number) => {
     setCurrentPage(pageIndex);
   };
+
+  if (isLoading) {
+    return (
+      <section className="py-20 bg-white" id="testimonial">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <div className="h-8 bg-gray-200 animate-pulse rounded w-32 mx-auto mb-4"></div>
+            <div className="h-12 bg-gray-200 animate-pulse rounded w-1/2 mx-auto mb-4"></div>
+            <div className="h-6 bg-gray-200 animate-pulse rounded w-2/3 mx-auto"></div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 animate-pulse">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 rounded-full bg-gray-200 mr-3"></div>
+                  <div className="h-6 bg-gray-200 rounded w-24"></div>
+                </div>
+                <div className="space-y-2">
+                  <div className="h-4 bg-gray-200 rounded w-full"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <motion.section
@@ -1255,9 +1601,9 @@ const TestimonialsSection: React.FC = () => {
             className="flex"
             style={{ gap: `${GAP_SIZE}px` }}
           >
-            {TESTIMONIALS.map((t, index) => (
+            {testimonials.map((testimonial, index) => (
               <motion.div
-                key={t.id}
+                key={testimonial.id}
                 className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition duration-300 flex flex-col flex-shrink-0"
                 style={{
                   width: `calc((100% - ${(itemsPerPage - 1) * GAP_SIZE}px) / ${itemsPerPage})`,
@@ -1267,49 +1613,42 @@ const TestimonialsSection: React.FC = () => {
               >
                 <div className="flex items-center mb-4">
                   <img
-                    src={t.avatarUrl}
-                    alt={t.name}
+                    src={testimonial.avatarUrl}
+                    alt={testimonial.name}
                     className="w-12 h-12 rounded-full object-cover mr-3 border-2 border-[#2563EB]"
                     onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) =>
-                      (e.currentTarget.src = `https://ui-avatars.com/api/?name=${t.name
+                      (e.currentTarget.src = `https://ui-avatars.com/api/?name=${testimonial.name
                         .split(" ")
                         .join("+")}&background=2563EB&color=fff`)
                     }
                   />
-                  <h3 className="font-bold text-gray-900 text-lg">{t.name}</h3>
+                  <h3 className="font-bold text-gray-900 text-lg">{testimonial.name}</h3>
                 </div>
 
                 <blockquote className="text-gray-700 italic flex-grow">
-                  {`"${t.excerpt}"`}
+                  {`"${testimonial.excerpt}"`}
                 </blockquote>
-
-                <a
-                  href={t.siteUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm font-medium text-[#2563EB] hover:text-[#1D4ED8] mt-4 truncate"
-                >
-                  {t.siteUrl}
-                </a>
               </motion.div>
             ))}
           </motion.div>
         </div>
 
-        <div className="flex justify-center my-8 space-x-2">
-          {Array.from({ length: totalPages }).map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToPage(index)}
-              className={`rounded-full transition-all duration-300 cursor-pointer ${
-                index === currentPage
-                  ? "bg-[#2563EB] w-8 h-2.5"
-                  : "bg-gray-300 hover:bg-gray-400 w-2.5 h-2.5"
-              }`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
+        {totalPages > 1 && (
+          <div className="flex justify-center my-8 space-x-2">
+            {Array.from({ length: totalPages }).map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToPage(index)}
+                className={`rounded-full transition-all duration-300 cursor-pointer ${
+                  index === currentPage
+                    ? "bg-[#2563EB] w-8 h-2.5"
+                    : "bg-gray-300 hover:bg-gray-400 w-2.5 h-2.5"
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </motion.section>
   );
