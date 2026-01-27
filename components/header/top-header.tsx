@@ -276,14 +276,14 @@ export default function Header() {
               </button>
 
               {/* WhatsApp Icon */}
-              <button
+              {/* <button
                 onClick={handleWhatsAppClick}
                 className="p-2.5 rounded-lg hover:bg-green-50 text-slate-600 hover:text-green-600 transition-all duration-300"
                 aria-label="WhatsApp"
                 title="Hubungi via WhatsApp"
               >
                 <FaWhatsapp className="w-5 h-5" />
-              </button>
+              </button> */}
 
               {/* Mobile Menu Button */}
               <button
@@ -418,7 +418,7 @@ export default function Header() {
 
           {/* Mobile Footer */}
           <div className="p-6 border-t border-gray-200 bg-white">
-            <div className="flex flex-col gap-3">
+            {/* <div className="flex flex-col gap-3">
               <button 
                 onClick={() => {
                   handleWhatsAppClick();
@@ -429,7 +429,7 @@ export default function Header() {
               >
                  <FaWhatsapp className="w-5 h-5" /> WhatsApp
               </button>
-            </div>
+            </div> */}
             <p className="text-center text-[10px] text-gray-400 mt-4">
               © 2025 My Solution Lending. All rights reserved.
             </p>

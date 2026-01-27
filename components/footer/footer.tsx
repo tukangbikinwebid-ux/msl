@@ -56,7 +56,7 @@ export default function Footer() {
     { icon: FaFacebookF, href: "https://facebook.com", color: "hover:bg-[#2563EB]" },
     { icon: FaYoutube, href: "https://youtube.com", color: "hover:bg-red-600" },
     { icon: FaTiktok, href: "https://tiktok.com", color: "hover:bg-black" },
-    { icon: FaWhatsapp, href: "https://wa.me/6281234567890", color: "hover:bg-green-500" },
+    // { icon: FaWhatsapp, href: "https://wa.me/", color: "hover:bg-green-500" },
   ];
 
   return (
@@ -104,13 +104,13 @@ export default function Footer() {
 
               {/* Contact Info */}
               <div className="space-y-3 text-sm">
-                <a
+                {/* <a
                   href="https://wa.me/6281234567890"
                   className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors"
                 >
                   <Phone className="w-4 h-4 flex-shrink-0" style={{ color: gold }} />
                   <span>{t["phone"]}</span>
-                </a>
+                </a> */}
                 <a
                   href="mailto:support@mysolutionlending.com"
                   className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors"

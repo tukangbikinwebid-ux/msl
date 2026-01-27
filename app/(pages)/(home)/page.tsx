@@ -710,11 +710,11 @@ const ProblemSection = () => {
 const GrowthFeatures = () => {
   const t = useTranslation({ en, id, ms, zh });
   const features = [
-    { icon: <CheckCircle />, title: "Proses Cepat & Mudah", benefit: "Dokumen minimal, proses online, persetujuan dalam 24 jam." },
-    { icon: <Shield />, title: "Aman & Terpercaya", benefit: "Berlisensi resmi, data terenkripsi, dan transparan tanpa biaya tersembunyi." },
-    { icon: <CreditCard />, title: "Bunga Kompetitif", benefit: "Bunga rendah mulai dari 0.8% per bulan dengan sistem yang fair." },
-    { icon: <MessageSquare />, title: "Layanan 24/7", benefit: "Customer service siap membantu kapan saja melalui WhatsApp, Email, dan Telepon." },
-    { icon: <BarChart3 />, title: "Fleksibel & Transparan", benefit: "Tenor fleksibel, tidak ada denda pelunasan lebih cepat, dan informasi jelas." },
+    { icon: <CheckCircle />, title: "Proses Cepat & Mudah", benefit: "Permohonan ringkas, langkah minimum dan tidak rumit. Kelulusan diproses dengan pantas tanpa prosedur yang menyusahkan." },
+    { icon: <Shield />, title: "Mohon hari ini, lulus hari ini", benefit: "Permohonan yang lengkap berpeluang mendapat keputusan kelulusan pada hari yang sama." },
+    { icon: <CreditCard />, title: "CTOS / CCRIS / AKPK / SAA boleh dipertimbangkan", benefit: "Pemohon yang mempunyai rekod kredit atau komitmen sedia ada masih berpeluang untuk dipertimbangkan." },
+    { icon: <MessageSquare />, title: "Kadar faedah terendah", benefit: "Menawarkan kadar faedah yang kompetitif bagi meringankan beban bayaran balik." },
+    { icon: <BarChart3 />, title: "Sebarang pekerjaan boleh mohon", benefit: "Terbuka kepada semua jenis pekerjaan termasuk swasta, kerajaan, bekerja sendiri dan freelancer." },
   ];
 
   return (
