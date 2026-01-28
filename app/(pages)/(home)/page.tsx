@@ -706,16 +706,106 @@ const ProblemSection = () => {
   );
 };
 
+// ========== SETTINGS API INTERFACE ==========
+interface WhyContentItem {
+  icon: string;
+  title: string;
+  description: string;
+}
+
+interface SettingsApiResponse {
+  code: number;
+  message: string;
+  data: {
+    landing_page?: {
+      why_content?: WhyContentItem[];
+    };
+  };
+}
+
+// Icon mapper - maps icon string from API to Lucide icon component
+const getIconComponent = (iconName: string): React.ReactElement => {
+  const iconMap: Record<string, React.ReactElement> = {
+    check: <CheckCircle />,
+    checkcircle: <CheckCircle />,
+    shield: <Shield />,
+    creditcard: <CreditCard />,
+    credit: <CreditCard />,
+    message: <MessageSquare />,
+    messagesquare: <MessageSquare />,
+    chart: <BarChart3 />,
+    barchart: <BarChart3 />,
+    globe: <Globe />,
+    zap: <Zap />,
+    settings: <Settings />,
+    code: <Code2 />,
+    search: <Search />,
+    server: <Server />,
+    info: <Info />,
+  };
+  
+  const normalizedName = iconName.toLowerCase().replace(/[^a-z]/g, "");
+  return iconMap[normalizedName] || <CheckCircle />;
+};
+
+// Feature type definition
+interface FeatureItem {
+  icon: React.ReactElement;
+  title: string;
+  benefit: string;
+}
+
 // ========== COMPONENT: GrowthFeatures (Why Choose Us) ==========
 const GrowthFeatures = () => {
   const t = useTranslation({ en, id, ms, zh });
-  const features = [
+  
+  // Default features (fallback)
+  const defaultFeatures: FeatureItem[] = [
     { icon: <CheckCircle />, title: "Proses Cepat & Mudah", benefit: "Permohonan ringkas, langkah minimum dan tidak rumit. Kelulusan diproses dengan pantas tanpa prosedur yang menyusahkan." },
     { icon: <Shield />, title: "Mohon hari ini, lulus hari ini", benefit: "Permohonan yang lengkap berpeluang mendapat keputusan kelulusan pada hari yang sama." },
     { icon: <CreditCard />, title: "CTOS / CCRIS / AKPK / SAA boleh dipertimbangkan", benefit: "Pemohon yang mempunyai rekod kredit atau komitmen sedia ada masih berpeluang untuk dipertimbangkan." },
     { icon: <MessageSquare />, title: "Kadar faedah terendah", benefit: "Menawarkan kadar faedah yang kompetitif bagi meringankan beban bayaran balik." },
     { icon: <BarChart3 />, title: "Sebarang pekerjaan boleh mohon", benefit: "Terbuka kepada semua jenis pekerjaan termasuk swasta, kerajaan, bekerja sendiri dan freelancer." },
   ];
+  
+  const [features, setFeatures] = useState<FeatureItem[]>(defaultFeatures);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch why_content from Settings API
+  useEffect(() => {
+    const fetchWhyContent = async () => {
+      try {
+        const response = await fetch("https://cms.mysolutionlending.com/api/v1/settings", {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          cache: "no-store",
+        });
+
+        if (!response.ok) throw new Error("API request failed");
+
+        const data: SettingsApiResponse = await response.json();
+
+        if (data.code === 200 && data.data?.landing_page?.why_content && data.data.landing_page.why_content.length > 0) {
+          const apiFeatures: FeatureItem[] = data.data.landing_page.why_content.map((item) => ({
+            icon: getIconComponent(item.icon),
+            title: item.title,
+            benefit: item.description,
+          }));
+          setFeatures(apiFeatures);
+        } else {
+          console.warn("why_content not found in API response, using fallback");
+          setFeatures(defaultFeatures);
+        }
+      } catch (error) {
+        console.warn("Failed to fetch why_content, using fallback:", error);
+        setFeatures(defaultFeatures);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchWhyContent();
+  }, []);
 
   return (
     <section className="py-20 bg-slate-900 text-white overflow-hidden" id="why-us">
@@ -730,18 +820,31 @@ const GrowthFeatures = () => {
             </p>
           </div>
           <div className="lg:w-1/2 grid grid-cols-1 gap-4">
-            {features.map((f, i) => (
-              <motion.div 
-                key={i} initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }}
-                className="flex items-start gap-4 p-5 rounded-xl bg-slate-800/50 border border-slate-700 hover:bg-slate-800 transition-colors"
-              >
-                <div className="p-3 bg-blue-600/20 rounded-lg text-blue-400">{f.icon}</div>
-                <div>
-                  <h4 className="font-bold text-lg">{f.title}</h4>
-                  <p className="text-gray-400 text-sm">{f.benefit}</p>
+            {isLoading ? (
+              // Loading skeleton
+              Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="flex items-start gap-4 p-5 rounded-xl bg-slate-800/50 border border-slate-700 animate-pulse">
+                  <div className="p-3 bg-slate-700 rounded-lg w-12 h-12"></div>
+                  <div className="flex-1">
+                    <div className="h-5 bg-slate-700 rounded w-3/4 mb-2"></div>
+                    <div className="h-4 bg-slate-700 rounded w-full"></div>
+                  </div>
                 </div>
-              </motion.div>
-            ))}
+              ))
+            ) : (
+              features.map((f, i) => (
+                <motion.div 
+                  key={i} initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }}
+                  className="flex items-start gap-4 p-5 rounded-xl bg-slate-800/50 border border-slate-700 hover:bg-slate-800 transition-colors"
+                >
+                  <div className="p-3 bg-blue-600/20 rounded-lg text-blue-400">{f.icon}</div>
+                  <div>
+                    <h4 className="font-bold text-lg">{f.title}</h4>
+                    <p className="text-gray-400 text-sm">{f.benefit}</p>
+                  </div>
+                </motion.div>
+              ))
+            )}
           </div>
         </div>
       </div>
@@ -1251,7 +1354,7 @@ const PricingSection = () => {
             </div>
 
             <button
-              onClick={() => setIsRegisterModalOpen(true)}
+              onClick={() => window.location.href = "https://apps.mysolutionlending.com/my/sign-up"}
               className="w-full py-4 rounded-xl text-white font-bold text-lg transition-all hover:shadow-lg active:scale-95"
               style={{ backgroundColor: colors.blue }}
             >
