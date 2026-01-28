@@ -44,7 +44,7 @@ const translations = {
   "section-9-title": "9. Contact Us",
   "section-9-desc": "If you have questions about this Privacy Policy, please contact us:",
   "contact-email": "Email: privacy@mysolutionlending.com",
-  "contact-phone": "Phone: +62 812 3456 7890",
+  "contact-phone": "Phone: 6010-511-8433",
   "contact-address": "Address: Jl. Sudirman No. 123, Central Jakarta, Indonesia",
 };
 

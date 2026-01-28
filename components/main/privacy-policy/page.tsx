@@ -469,20 +469,6 @@ export default function PrivacyPolicyPage() {
                             </a>
                           </div>
                         </div>
-                        <div className="flex items-start gap-4">
-                          <div
-                            className="p-3 rounded-lg flex-shrink-0"
-                            style={{ backgroundColor: `${blue}20` }}
-                          >
-                            <MapPin className="w-5 h-5" style={{ color: blue }} />
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-600 mb-1">Alamat</p>
-                            <p className="text-blue-700 font-semibold">
-                              {t["contact-address"]}
-                            </p>
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </div>

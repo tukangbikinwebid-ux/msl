@@ -30,7 +30,7 @@ const translations = {
   "faq-11-question": "Apakah ada biaya tersembunyi?",
   "faq-11-answer": "Tidak ada biaya tersembunyi. Semua biaya termasuk bunga, administrasi, dan provisi akan diinformasikan secara transparan sebelum Anda menandatangani perjanjian pinjaman.",
   "faq-12-question": "Bagaimana cara menghubungi customer service?",
-  "faq-12-answer": "Anda dapat menghubungi customer service kami melalui WhatsApp di +62 812 3456 7890, email di support@mysolutionlending.com, atau melalui live chat di website kami. Layanan tersedia 24/7.",
+  "faq-12-answer": "Anda dapat menghubungi customer service kami melalui WhatsApp di 6010-511-8433, email di support@mysolutionlending.com, atau melalui live chat di website kami. Layanan tersedia 24/7.",
   "no-results": "Tidak ada hasil ditemukan",
   "no-results-desc": "Coba gunakan kata kunci lain atau lihat kategori lainnya",
 };

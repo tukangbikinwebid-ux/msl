@@ -44,7 +44,7 @@ const translations = {
   "section-9-title": "9. Hubungi Kami",
   "section-9-desc": "Jika anda mempunyai soalan tentang Dasar Privasi ini, sila hubungi kami:",
   "contact-email": "Emel: privacy@mysolutionlending.com",
-  "contact-phone": "Telefon: +62 812 3456 7890",
+  "contact-phone": "Telefon: 6010-511-8433",
   "contact-address": "Alamat: Jl. Sudirman No. 123, Jakarta Pusat, Indonesia",
 };
 

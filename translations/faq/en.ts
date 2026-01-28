@@ -30,7 +30,7 @@ const translations = {
   "faq-11-question": "Are there any hidden fees?",
   "faq-11-answer": "There are no hidden fees. All fees including interest, administration, and provision will be informed transparently before you sign the loan agreement.",
   "faq-12-question": "How do I contact customer service?",
-  "faq-12-answer": "You can contact our customer service via WhatsApp at +62 812 3456 7890, email at support@mysolutionlending.com, or through live chat on our website. Service is available 24/7.",
+  "faq-12-answer": "You can contact our customer service via WhatsApp at 6010-511-8433, email at support@mysolutionlending.com, or through live chat on our website. Service is available 24/7.",
   "no-results": "No results found",
   "no-results-desc": "Try using different keywords or check other categories",
 };

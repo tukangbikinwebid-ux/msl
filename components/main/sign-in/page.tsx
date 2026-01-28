@@ -513,7 +513,7 @@ export default function LoginPage() {
                         }))
                       }
                       className="w-full pl-12 pr-4 py-3.5 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#A3B18A] focus:border-transparent"
-                      placeholder="+62 812 3456 7890"
+                      placeholder="6010-511-8433"
                     />
                   </div>
                 </div>

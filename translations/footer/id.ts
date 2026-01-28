@@ -26,7 +26,7 @@ const translations: Record<string, string> = {
   "licensed-desc": "Terdaftar dan diawasi oleh OJK",
   "follow-us": "Ikuti Kami",
   "address": "Jl. Sudirman No. 123, Jakarta Pusat, Indonesia",
-  "phone": "+62 812 3456 7890",
+  "phone": "6010-511-8433",
   "all-rights": "Semua hak dilindungi.",
 };
 

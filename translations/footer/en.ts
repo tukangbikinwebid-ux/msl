@@ -16,7 +16,7 @@ const translations: Record<string, string> = {
   "service-mortgage": "Mortgage Loan",
   "service-vehicle": "Vehicle Loan",
   "operating-hours": "Operating Hours",
-  "hours-detail": "Monday - Friday: 09:00 - 18:00 WIB",
+  "hours-detail": "Monday – Saturday | 9.00 AM – 9.00 PM & Sunday | 9.00 AM – 7.00 PM",
   "legal-support": "Legal & Support",
   "privacy-policy": "Privacy Policy",
   "terms": "Terms & Conditions",
@@ -26,7 +26,7 @@ const translations: Record<string, string> = {
   "licensed-desc": "Registered and supervised by OJK",
   "follow-us": "Follow Us",
   "address": "Jl. Sudirman No. 123, Central Jakarta, Indonesia",
-  "phone": "+62 812 3456 7890",
+  "phone": "6010-511-8433",
   "all-rights": "All rights reserved.",
 };
 

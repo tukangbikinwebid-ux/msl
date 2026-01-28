@@ -53,7 +53,7 @@ const translations = {
   "section-11-title": "11. Contact",
   "section-11-desc": "For questions about Terms & Conditions, contact us:",
   "contact-email": "Email: legal@mysolutionlending.com",
-  "contact-phone": "Phone: +62 812 3456 7890",
+  "contact-phone": "Phone: 6010-511-8433",
 };
 
 export default translations;

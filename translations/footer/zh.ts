@@ -16,7 +16,7 @@ const translations: Record<string, string> = {
   "service-mortgage": "房屋贷款",
   "service-vehicle": "车辆贷款",
   "operating-hours": "营业时间",
-  "hours-detail": "周一至周五：09:00 - 18:00 WIB",
+  "hours-detail": "周一至周五：09:00 - 18:00 WIB & 周六至周日：09:00 - 18:00 WIB",
   "legal-support": "法律与支持",
   "privacy-policy": "隐私政策",
   "terms": "条款与条件",
@@ -26,7 +26,7 @@ const translations: Record<string, string> = {
   "licensed-desc": "由OJK注册和监管",
   "follow-us": "关注我们",
   "address": "Jl. Sudirman No. 123, 雅加达中部, 印度尼西亚",
-  "phone": "+62 812 3456 7890",
+  "phone": "6010-511-8433",
   "all-rights": "保留所有权利。",
 };
 

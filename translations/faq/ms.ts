@@ -30,7 +30,7 @@ const translations = {
   "faq-11-question": "Adakah terdapat yuran tersembunyi?",
   "faq-11-answer": "Tiada yuran tersembunyi. Semua yuran termasuk bunga, pentadbiran, dan provisi akan dimaklumkan secara telus sebelum anda menandatangani perjanjian pinjaman.",
   "faq-12-question": "Bagaimana cara menghubungi khidmat pelanggan?",
-  "faq-12-answer": "Anda boleh menghubungi khidmat pelanggan kami melalui WhatsApp di +62 812 3456 7890, emel di support@mysolutionlending.com, atau melalui live chat di laman web kami. Perkhidmatan tersedia 24/7.",
+  "faq-12-answer": "Anda boleh menghubungi khidmat pelanggan kami melalui WhatsApp di 6010-511-8433, emel di support@mysolutionlending.com, atau melalui live chat di laman web kami. Perkhidmatan tersedia 24/7.",
   "no-results": "Tiada hasil ditemui",
   "no-results-desc": "Cuba gunakan kata kunci lain atau lihat kategori lain",
 };

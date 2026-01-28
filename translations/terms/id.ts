@@ -53,7 +53,7 @@ const translations = {
   "section-11-title": "11. Kontak",
   "section-11-desc": "Untuk pertanyaan tentang Syarat & Ketentuan, hubungi kami:",
   "contact-email": "Email: legal@mysolutionlending.com",
-  "contact-phone": "Telepon: +62 812 3456 7890",
+  "contact-phone": "Telepon: 6010-511-8433",
 };
 
 export default translations;

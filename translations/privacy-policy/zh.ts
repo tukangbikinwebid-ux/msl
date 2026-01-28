@@ -44,7 +44,7 @@ const translations = {
   "section-9-title": "9. 联系我们",
   "section-9-desc": "如果您对本隐私政策有任何疑问，请联系我们：",
   "contact-email": "电子邮件：privacy@mysolutionlending.com",
-  "contact-phone": "电话：+62 812 3456 7890",
+  "contact-phone": "电话：6010-511-8433",
   "contact-address": "地址：Jl. Sudirman No. 123, 雅加达中部, 印度尼西亚",
 };
 

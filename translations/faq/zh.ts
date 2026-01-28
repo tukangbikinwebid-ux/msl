@@ -30,7 +30,7 @@ const translations = {
   "faq-11-question": "是否有隐藏费用？",
   "faq-11-answer": "没有隐藏费用。所有费用包括利息、管理费和手续费将在您签署贷款协议前透明告知。",
   "faq-12-question": "如何联系客服？",
-  "faq-12-answer": "您可以通过WhatsApp +62 812 3456 7890、电子邮件support@mysolutionlending.com或我们网站上的在线聊天联系我们的客服。服务24/7可用。",
+  "faq-12-answer": "您可以通过WhatsApp 6010-511-8433、电子邮件support@mysolutionlending.com或我们网站上的在线聊天联系我们的客服。服务24/7可用。",
   "no-results": "未找到结果",
   "no-results-desc": "尝试使用其他关键词或查看其他类别",
 };

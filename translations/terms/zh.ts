@@ -53,7 +53,7 @@ const translations = {
   "section-11-title": "11. 联系",
   "section-11-desc": "有关条款与条件的问题，请联系我们：",
   "contact-email": "电子邮件：legal@mysolutionlending.com",
-  "contact-phone": "电话：+62 812 3456 7890",
+  "contact-phone": "电话：6010-511-8433",
 };
 
 export default translations;

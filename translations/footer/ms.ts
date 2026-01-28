@@ -16,7 +16,7 @@ const translations: Record<string, string> = {
   "service-mortgage": "Pinjaman Perumahan",
   "service-vehicle": "Pinjaman Kenderaan",
   "operating-hours": "Waktu Operasi",
-  "hours-detail": "Isnin - Jumaat: 09:00 - 18:00 WIB",
+  "hours-detail": "Isnin – Sabtu | 9.00 pagi – 9.00 malam & Ahad | 9.00 pagi – 7.00 malam",
   "legal-support": "Undang-undang & Sokongan",
   "privacy-policy": "Dasar Privasi",
   "terms": "Terma & Syarat",
@@ -26,7 +26,7 @@ const translations: Record<string, string> = {
   "licensed-desc": "Berdaftar dan diawasi oleh OJK",
   "follow-us": "Ikuti Kami",
   "address": "Jl. Sudirman No. 123, Jakarta Pusat, Indonesia",
-  "phone": "+62 812 3456 7890",
+  "phone": "6010-511-8433",
   "all-rights": "Hak cipta terpelihara.",
 };
 
