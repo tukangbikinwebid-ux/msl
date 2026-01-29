@@ -1,13 +1,12 @@
 const translations = {
-  "promo-label": "🎁 SPECIAL PROMO:",
-  "promo-text": "Interest 0.8%",
-  "promo-subtext": "for the first 6 months",
-  "message-1": "🎉 Loan approved in 24 hours! Fast and easy process",
-  "message-2": "✅ Interest starting from 0.8% per month - Competitive and transparent",
-  "message-3": "💳 Loans up to Rp 2 Billion - Flexible tenor 6-24 months",
-  "message-4": "🛡️ Officially licensed - Secure and encrypted data",
-  "message-5": "📞 24/7 Service - Customer service ready to help anytime",
-  "message-6": "⚡ Quick approval - Minimal documents, online process",
+  "promo-label": "⚡️ Mohon hari ini, lulus hari ini!",
+  "promo-text": "Pinjaman sehingga",
+  "promo-subtext": "RM200,000",
+  "message-1": "✅ Bunga bermula dari 0.8% sebulan - Kompetitif dan telus",
+  "message-2": "💳 Pinjaman sehingga Rp 2 Bilion - Tempoh fleksibel 6-24 bulan",
+  "message-3": "🛡️ Berlesen rasmi - Data selamat dan disulitkan",
+  "message-4": "📞 Perkhidmatan 24/7 - Khidmat pelanggan sedia membantu bila-bila masa",
+  "message-5": "⚡ Kelulusan cepat - Dokumen minimum, proses dalam talian",
 };
 
 export default translations;

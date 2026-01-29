@@ -103,23 +103,24 @@ export default function PagesLayout({
         const data: SettingsResponse = await response.json();
         
         if (data.code === 200 && data.data) {
+          const { meta_pixel, promo_text: apiPromoText, running_text: apiRunningText } = data.data;
+
           // Set Meta Pixel ID
-          const pixelId = data.data.meta_pixel;
-          if (pixelId && pixelId.trim() !== "") {
-            setMetaPixelId(pixelId);
+          if (meta_pixel && meta_pixel.trim() !== "") {
+            setMetaPixelId(meta_pixel);
           } else {
             console.warn("Meta Pixel ID not found in API response, using fallback");
             setMetaPixelId(DUMMY_META_PIXEL_ID);
           }
-          
-          // Set Promo Text
-          if (data.data.promo_text && data.data.promo_text.trim() !== "") {
-            setPromoText(data.data.promo_text);
+
+          // PromoBanner: ambil dari data.data.promo_text
+          if (apiPromoText && apiPromoText.trim() !== "") {
+            setPromoText(apiPromoText);
           }
-          
-          // Set Running Text
-          if (data.data.running_text && data.data.running_text.trim() !== "") {
-            setRunningText(data.data.running_text);
+
+          // RunningText: ambil dari data.data.running_text
+          if (apiRunningText && apiRunningText.trim() !== "") {
+            setRunningText(apiRunningText);
           }
         }
       } catch (error) {

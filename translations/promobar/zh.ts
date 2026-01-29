@@ -1,13 +1,12 @@
 const translations = {
-  "promo-label": "🎁 特别促销:",
-  "promo-text": "利率 0.8%",
-  "promo-subtext": "前 6 个月",
-  "message-1": "🎉 24小时内批准贷款！流程快速简便",
-  "message-2": "✅ 利率从每月 0.8% 起 - 具有竞争力且透明",
-  "message-3": "💳 贷款高达 20 亿印尼盾 - 灵活期限 6-24 个月",
-  "message-4": "🛡️ 官方许可 - 数据安全加密",
-  "message-5": "📞 24/7 服务 - 客服随时准备帮助",
-  "message-6": "⚡ 快速审批 - 文件最少，在线流程",
+  "promo-label": "⚡️ Mohon hari ini, lulus hari ini!",
+  "promo-text": "Pinjaman sehingga",
+  "promo-subtext": "RM200,000",
+  "message-1": "✅ Bunga bermula dari 0.8% sebulan - Kompetitif dan telus",
+  "message-2": "💳 Pinjaman sehingga Rp 2 Bilion - Tempoh fleksibel 6-24 bulan",
+  "message-3": "🛡️ Berlesen rasmi - Data selamat dan disulitkan",
+  "message-4": "📞 Perkhidmatan 24/7 - Khidmat pelanggan sedia membantu bila-bila masa",
+  "message-5": "⚡ Kelulusan cepat - Dokumen minimum, proses dalam talian",
 };
 
 export default translations;
