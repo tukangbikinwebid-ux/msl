@@ -181,6 +181,7 @@ export default function Footer() {
                   <div>
                     <p className="text-sm font-semibold text-white mb-1">{t["operating-hours"]}</p>
                     <p className="text-xs text-gray-400">{t["hours-detail"]}</p>
+                    <p className="text-xs text-gray-400">{t["hours-detail-2"]}</p>
                   </div>
                 </div>
               </div>
@@ -231,13 +232,13 @@ export default function Footer() {
               </ul>
 
               {/* Trust Badge */}
-              <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+              {/* <div className="bg-white/5 rounded-lg p-4 border border-white/10">
                 <div className="flex items-center gap-3 mb-2">
                   <Shield className="w-5 h-5" style={{ color: gold }} />
                   <span className="text-sm font-semibold">{t["licensed"]}</span>
                 </div>
                 <p className="text-xs text-gray-400">{t["licensed-desc"]}</p>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
