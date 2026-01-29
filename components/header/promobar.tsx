@@ -18,7 +18,6 @@ const PromoBar: React.FC = () => {
     t["message-3"],
     t["message-4"],
     t["message-5"],
-    t["message-6"],
   ];
 
   // Duplikasi teks untuk memastikan panjangnya cukup dan efek berjalan terus menerus
